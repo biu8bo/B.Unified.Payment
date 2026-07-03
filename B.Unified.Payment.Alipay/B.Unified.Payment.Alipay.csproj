@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\B.Unified.Payment.Abstract\B.Unified.Payment.Abstract.csproj" />
+    <PackageReference Include="AlipaySDKNet.Standard" Version="4.9.*" />
+  </ItemGroup>
+</Project>
