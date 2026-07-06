@@ -33,6 +33,7 @@ namespace B.Unified.Payment.Alipay.PayWay
 
             var resp = client.Execute(req);
             var rs = new Models.AliBarOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
+            rs.ChannelOriginResponse = resp.Body;
             var ret = new ChannelRetMsg
             {
                 ChannelAttach = resp.Body, ChannelOrderId = resp.TradeNo, ChannelUserId = resp.BuyerUserId

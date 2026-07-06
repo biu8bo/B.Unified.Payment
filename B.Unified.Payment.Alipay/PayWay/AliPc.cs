@@ -27,6 +27,7 @@ namespace B.Unified.Payment.Alipay.PayWay
 
             var rs = new Models.AliPcOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
             rs.FormContent = client.pageExecute(req).Body;
+            rs.ChannelOriginResponse = rs.FormContent;
             rs.ChannelRetMsg = ChannelRetMsg.Waiting();
             PayLogger.LogResponse("Alipay", "ALI_PC", new { FormLen = rs.FormContent?.Length }, rs.ChannelRetMsg);
             return rs;

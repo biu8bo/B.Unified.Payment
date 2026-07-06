@@ -10,6 +10,12 @@ namespace B.Unified.Payment.Abstract.Models
     public abstract class AbstractRS
     {
         /// <summary>
+        /// 渠道返回的原始响应体（JSON字符串），用于问题排查
+        /// </summary>
+        [JsonIgnore]
+        public string ChannelOriginResponse { get; set; }
+
+        /// <summary>
         /// 将对象序列化为JSON字符串
         /// </summary>
         public string ToJsonString()

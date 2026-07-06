@@ -133,14 +133,14 @@ namespace B.Unified.Payment.Abstract.Models.Payment
             return JsonConvert.DeserializeObject<T>(ChannelExtra) ?? new T();
         }
 
-        /// <summary>分→元（长格式，如 100 → "1.00"），用于支付宝 SDK</summary>
+        /// <summary>分→元（长格式，如 100 → "1.00"）</summary>
         public string GetAmountYuan()
         {
             if (Amount == null) return "0.00";
             return (Amount.Value / 100.0m).ToString("F2");
         }
 
-        /// <summary>获取金额（分），用于微信 SDK</summary>
+        /// <summary>获取金额（分）</summary>
         public int GetAmountFen()
         {
             return (int)(Amount ?? 0);

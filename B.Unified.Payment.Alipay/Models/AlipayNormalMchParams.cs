@@ -21,7 +21,7 @@ namespace B.Unified.Payment.Alipay.Models
 
         /// <summary>签名算法类型（推荐 RSA2）</summary>
         public string SignType { get; set; }
-
+        
         /// <summary>是否使用证书模式: 0-公钥模式, 1-证书模式</summary>
         public byte? UseCert { get; set; }
 
