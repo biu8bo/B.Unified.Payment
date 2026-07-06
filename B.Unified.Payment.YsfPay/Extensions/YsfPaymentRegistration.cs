@@ -1,6 +1,7 @@
 using B.Unified.Payment.Abstract.Factory;
 using B.Unified.Payment.Abstract.Interfaces;
 using B.Unified.Payment.YsfPay.PayWay;
+using B.Unified.Payment.YsfPay.Services.Close;
 using B.Unified.Payment.YsfPay.Services.Query;
 using B.Unified.Payment.YsfPay.Services.Refund;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,7 @@ namespace B.Unified.Payment.YsfPay.Extensions
             builder.AddPaymentService<YsfJsapi>();
             builder.AddQueryService<YsfpayPayOrderQueryService>();
             builder.AddRefundService<YsfpayRefundService>();
+            builder.AddCloseService<YsfpayPayOrderCloseService>();
             return builder;
         }
 
@@ -25,6 +27,7 @@ namespace B.Unified.Payment.YsfPay.Extensions
             services.AddTransient<IPaymentService, YsfJsapi>();
             services.AddTransient<IPayOrderQueryService, YsfpayPayOrderQueryService>();
             services.AddTransient<IRefundService, YsfpayRefundService>();
+            services.AddTransient<IPayOrderCloseService, YsfpayPayOrderCloseService>();
             return services;
         }
     }

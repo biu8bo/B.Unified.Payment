@@ -1,6 +1,7 @@
 using B.Unified.Payment.Abstract.Factory;
 using B.Unified.Payment.Abstract.Interfaces;
 using B.Unified.Payment.Alipay.PayWay;
+using B.Unified.Payment.Alipay.Services.Close;
 using B.Unified.Payment.Alipay.Services.Query;
 using B.Unified.Payment.Alipay.Services.Refund;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ namespace B.Unified.Payment.Alipay.Extensions
             builder.AddPaymentService<AliOc>();
             builder.AddQueryService<AlipayPayOrderQueryService>();
             builder.AddRefundService<AlipayRefundService>();
+            builder.AddCloseService<AlipayPayOrderCloseService>();
             return builder;
         }
 
@@ -37,6 +39,7 @@ namespace B.Unified.Payment.Alipay.Extensions
             services.AddTransient<IPaymentService, AliOc>();
             services.AddTransient<IPayOrderQueryService, AlipayPayOrderQueryService>();
             services.AddTransient<IRefundService, AlipayRefundService>();
+            services.AddTransient<IPayOrderCloseService, AlipayPayOrderCloseService>();
             return services;
         }
     }

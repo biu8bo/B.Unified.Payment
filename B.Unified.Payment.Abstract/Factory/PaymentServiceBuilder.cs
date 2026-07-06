@@ -15,6 +15,7 @@ namespace B.Unified.Payment.Abstract.Factory
         private readonly List<Func<IPaymentService>> _paymentFactories = new List<Func<IPaymentService>>();
         private readonly List<Func<IPayOrderQueryService>> _queryFactories = new List<Func<IPayOrderQueryService>>();
         private readonly List<Func<IRefundService>> _refundFactories = new List<Func<IRefundService>>();
+        private readonly List<Func<IPayOrderCloseService>> _closeFactories = new List<Func<IPayOrderCloseService>>();
         private ILoggerFactory _loggerFactory = NullLoggerFactory.Instance;
 
         public static PaymentServiceBuilder Create() => new PaymentServiceBuilder();
@@ -55,7 +56,14 @@ namespace B.Unified.Payment.Abstract.Factory
             return this;
         }
 
+        /// <summary>注册关单服务</summary>
+        public PaymentServiceBuilder AddCloseService<T>() where T : class, IPayOrderCloseService, new()
+        {
+            _closeFactories.Add(() => new T());
+            return this;
+        }
+
         public PaymentServiceFactory Build()
-            => new PaymentServiceFactory(_paymentFactories, _queryFactories, _refundFactories, _loggerFactory);
+            => new PaymentServiceFactory(_paymentFactories, _queryFactories, _refundFactories, _closeFactories, _loggerFactory);
     }
 }

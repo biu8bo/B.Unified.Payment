@@ -1,6 +1,7 @@
 using B.Unified.Payment.Abstract.Factory;
 using B.Unified.Payment.Abstract.Interfaces;
 using B.Unified.Payment.Weixin.PayWay;
+using B.Unified.Payment.Weixin.Services.Close;
 using B.Unified.Payment.Weixin.Services.Query;
 using B.Unified.Payment.Weixin.Services.Refund;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ namespace B.Unified.Payment.Weixin.Extensions
             builder.AddPaymentService<WxBar>();
             builder.AddQueryService<WeixinPayOrderQueryService>();
             builder.AddRefundService<WeixinRefundService>();
+            builder.AddCloseService<WeixinPayOrderCloseService>();
             return builder;
         }
 
@@ -33,6 +35,7 @@ namespace B.Unified.Payment.Weixin.Extensions
             services.AddTransient<IPaymentService, WxBar>();
             services.AddTransient<IPayOrderQueryService, WeixinPayOrderQueryService>();
             services.AddTransient<IRefundService, WeixinRefundService>();
+            services.AddTransient<IPayOrderCloseService, WeixinPayOrderCloseService>();
             return services;
         }
     }

@@ -10,7 +10,8 @@
 > | 统一查单（`IPayOrderQueryService.QueryAsync`） | ✅ 已实现 |
 > | 统一退款（`IRefundService.RefundAsync`） | ✅ 已实现 |
 > | 退款查单（`IRefundService.QueryAsync`） | ✅ 已实现 |
-> | 分账、服务商子商户、支付回调验签、关单 等 | ❌ 暂不支持 |
+> | 统一关单（`IPayOrderCloseService.CloseAsync`） | ✅ 已实现 |
+> | 分账、服务商子商户、支付回调验签 等 | ❌ 暂不支持 |
 > 
 > 需要其他功能请提交 [Issue](https://github.com/your-repo/issues)，分账、子商户等功能可通过 PR 贡献。
 
@@ -21,7 +22,7 @@ B.Unified.Payment 是一套 .NET 统一支付 SDK，参考 [Jeepay](https://gith
 - **抽象层零业务依赖** — `Abstract` 项目只包含接口、抽象类、共享 DTO、工厂，不含渠道具体实现
 - **渠道实现隔离** — 每个支付渠道（Alipay / Weixin / YsfPay）是独立类库，互不引用，按需安装
 - **内置 DI 支持** — 每个渠道自带 `AddAlipayPayment()` / `AddWeixinPayment()` 扩展方法，工厂根据 `ifCode` + `wayCode` 自动路由到对应 PayWay 实现
-- **统一接口** — `IPaymentService` / `IPayOrderQueryService` / `IRefundService` 统一支付、查单、退款能力
+- **统一接口** — `IPaymentService` / `IPayOrderQueryService` / `IRefundService` / `IPayOrderCloseService` 统一支付、查单、退款、关单能力
 - **强类型安全** — `PayWayCode` / `PayDataTypeCode` 值类、`PayOrderState` 枚举，编译期防止拼写错误
 - **内置日志** — `PayLogger` 基于 `Microsoft.Extensions.Logging`，支持标准 .NET 日志体系
 - **全异步** — 所有接口方法均为 `Task` 异步（`PayAsync` / `QueryAsync` / `RefundAsync`）
@@ -58,7 +59,8 @@ B.Unified.Payment 是一套 .NET 统一支付 SDK，参考 [Jeepay](https://gith
 | `IPaymentService` | 统一支付 | `Task<AbstractRS> PayAsync(UnifiedOrderRQ, MchAppConfigContext)` |
 | `IPayOrderQueryService` | 支付订单查询 | `Task<ChannelRetMsg> QueryAsync(payOrderId, MchAppConfigContext)` |
 | `IRefundService` | 退款 + 退款查单 | `Task<ChannelRetMsg> RefundAsync(RefundOrderRQ, ctx)` / `Task<ChannelRetMsg> QueryAsync(...)` |
-| `IPaymentServiceFactory` | 服务工厂 | `GetPaymentService(wayCode)` / `GetPaymentService(ifCode, wayCode)` / `GetQueryService(ifCode)` / `GetRefundService(ifCode)` |
+| `IPayOrderCloseService` | 支付订单关单 | `Task<ChannelRetMsg> CloseAsync(CloseOrderRQ, MchAppConfigContext)` |
+| `IPaymentServiceFactory` | 服务工厂 | `GetPaymentService(wayCode)` / `GetQueryService(ifCode)` / `GetRefundService(ifCode)` / `GetCloseService(ifCode)` |
 
 ### 其他特性
 
@@ -78,7 +80,7 @@ B.Unified.Payment 是一套 .NET 统一支付 SDK，参考 [Jeepay](https://gith
 ```
 B.Unified.Payment/
 ├── B.Unified.Payment.Abstract/          # 抽象层（接口 + 共享 DTO + 工厂）
-│   ├── Interfaces/                      #   IPaymentService / IPayOrderQueryService / IRefundService
+│   ├── Interfaces/                      #   IPaymentService / IPayOrderQueryService / IRefundService / IPayOrderCloseService
 │   ├── Services/                        #   AbstractPaymentService（支付模板基类）
 │   ├── Factory/                         #   PaymentServiceBuilder + PaymentServiceFactory
 │   ├── Models/
@@ -86,7 +88,7 @@ B.Unified.Payment/
 │   │   ├── Base/                        #   AbstractRQ / AbstractRS
 │   │   ├── Channel/                     #   ChannelRetMsg / ChannelState
 │   │   ├── Mch/                         #   MchAppConfigContext / EnvFlag / CurrencyCode
-│   │   ├── Payment/                     #   UnifiedOrderRQ/RS、PayDataTypeCode、PayOrderState 等
+│   │   ├── Payment/                     #   UnifiedOrderRQ/RS、CloseOrderRQ、PayDataTypeCode、PayOrderState 等
 │   │   └── Refund/                      #   RefundOrderRQ
 │   ├── Exceptions/                      #   BizException / ChannelException
 │   └── Diagnostics/                     #   PayLogger
@@ -96,6 +98,7 @@ B.Unified.Payment/
 │   ├── Extensions/                      #   AddAlipayPayment() / AddAlipay() 注册扩展
 │   ├── Services/
 │   │   ├── Query/                       #   AlipayPayOrderQueryService
+│   │   ├── Close/                       #   AlipayPayOrderCloseService
 │   │   └── Refund/                      #   AlipayRefundService
 │   ├── Models/
 │   │   ├── Mch/                         #   CertMode（渠道自有）
@@ -109,6 +112,7 @@ B.Unified.Payment/
 │   ├── Extensions/                      #   AddWeixinPayment() / AddWeixin() 注册扩展
 │   ├── Services/
 │   │   ├── Query/                       #   WeixinPayOrderQueryService
+│   │   ├── Close/                       #   WeixinPayOrderCloseService
 │   │   └── Refund/                      #   WeixinRefundService
 │   ├── Models/
 │   │   ├── Mch/                         #   CertMode（渠道自有）
@@ -122,6 +126,7 @@ B.Unified.Payment/
 │   ├── Extensions/                      #   AddYsfPayPayment() / AddYsfPay() 注册扩展
 │   ├── Services/
 │   │   ├── Query/                       #   YsfpayPayOrderQueryService
+│   │   ├── Close/                       #   YsfpayPayOrderCloseService
 │   │   └── Refund/                      #   YsfpayRefundService
 │   ├── Models/
 │   │   ├── Mch/                         #   CertMode（渠道自有）
@@ -225,7 +230,7 @@ public class PaymentController : ControllerBase
 }
 ```
 
-### 4. 查单 / 退款
+### 4. 查单 / 退款 / 关单
 
 ```csharp
 // 通过工厂（与支付共用 Builder）
@@ -240,8 +245,15 @@ var result = await refundService.RefundAsync(new RefundOrderRQ
     RefundAmount = 100, RefundReason = "用户申请"
 }, config);
 
+var closeService = factory.GetCloseService(IfCode.ALIPAY);
+var result = await closeService.CloseAsync(new CloseOrderRQ { PayOrderId = "ORDER001" }, config);
+
+// 云闪付关单需传入 WayCode
+// await factory.GetCloseService(IfCode.YSFPAY).CloseAsync(
+//     new CloseOrderRQ { PayOrderId = "ORDER001", WayCode = "YSF_BAR" }, config);
+
 // 或直接实例化
-// var queryService = new AlipayPayOrderQueryService();
+// var closeService = new AlipayPayOrderCloseService();
 ```
 
 ### 5. 运行 Sample
@@ -256,7 +268,19 @@ cd Sample/B.Unified.Payment.Sample.WebApi && dotnet run
 curl -X POST http://localhost:5000/api/payment/pay \
   -H "Content-Type: application/json" \
   -d '{"ifCode":"alipay","wayCode":"ALI_QR","amount":100}'
+
+curl -X POST http://localhost:5000/api/close/close \
+  -H "Content-Type: application/json" \
+  -d '{"ifCode":"alipay","payOrderId":"ORDER001"}'
 ```
+
+## 关单接口说明
+
+| 渠道 | 接口 | 说明 |
+|------|------|------|
+| 支付宝 | `alipay.trade.close` | 成功 → `CONFIRM_SUCCESS`，失败 → `SYS_ERROR` |
+| 微信 V3 | `POST /v3/pay/transactions/out-trade-no/{id}/close` | 无异常即成功 → `CONFIRM_SUCCESS` |
+| 云闪付 | `/gateway/api/pay/closeOrder` | `respCode=00` → `CONFIRM_SUCCESS`，需传 `WayCode` |
 
 ## 渠道状态映射
 
@@ -327,7 +351,7 @@ curl -X POST http://localhost:5000/api/payment/pay \
 
 ## 贡献
 
-目前仅实现了统一支付、统一查单、统一退款、退款查单四个核心接口，仅支持普通商户直连模式。
+目前仅实现了统一支付、统一查单、统一退款、退款查单、统一关单五个核心接口，仅支持普通商户直连模式。
 
 以下功能不在当前计划中，欢迎通过 PR 贡献：
 

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace B.Unified.Payment.Abstract.Factory
 {
     /// <summary>
-    /// 支付服务工厂 — 根据 ifCode + wayCode 获取对应的支付/查单/退款服务。
+    /// 支付服务工厂 — 根据 ifCode + wayCode 获取对应的支付/查单/退款/关单服务。
     /// </summary>
     public interface IPaymentServiceFactory
     {
@@ -21,6 +21,7 @@ namespace B.Unified.Payment.Abstract.Factory
 
         IPayOrderQueryService GetQueryService(string ifCode);
         IRefundService GetRefundService(string ifCode);
+        IPayOrderCloseService GetCloseService(string ifCode);
     }
 
     public class PaymentServiceFactory : IPaymentServiceFactory
@@ -28,17 +29,20 @@ namespace B.Unified.Payment.Abstract.Factory
         private readonly IReadOnlyList<Func<IPaymentService>> _paymentFactories;
         private readonly IReadOnlyList<Func<IPayOrderQueryService>> _queryFactories;
         private readonly IReadOnlyList<Func<IRefundService>> _refundFactories;
+        private readonly IReadOnlyList<Func<IPayOrderCloseService>> _closeFactories;
 
-        /// <summary>DI 容器注入（MS.DI 解析 IEnumerable&lt;IPaymentService&gt; 时使用）</summary>
+        /// <summary>DI 容器注入（MS.DI 解析 IEnumerable&lt;T&gt; 时使用）</summary>
         public PaymentServiceFactory(
             IEnumerable<IPaymentService> paymentServices,
             IEnumerable<IPayOrderQueryService> queryServices,
             IEnumerable<IRefundService> refundServices,
+            IEnumerable<IPayOrderCloseService> closeServices,
             ILoggerFactory loggerFactory)
             : this(
                 (paymentServices ?? Array.Empty<IPaymentService>()).Select(s => (Func<IPaymentService>)(() => s)),
                 (queryServices ?? Array.Empty<IPayOrderQueryService>()).Select(s => (Func<IPayOrderQueryService>)(() => s)),
                 (refundServices ?? Array.Empty<IRefundService>()).Select(s => (Func<IRefundService>)(() => s)),
+                (closeServices ?? Array.Empty<IPayOrderCloseService>()).Select(s => (Func<IPayOrderCloseService>)(() => s)),
                 loggerFactory)
         {
         }
@@ -47,11 +51,13 @@ namespace B.Unified.Payment.Abstract.Factory
             IEnumerable<Func<IPaymentService>> paymentFactories,
             IEnumerable<Func<IPayOrderQueryService>> queryFactories,
             IEnumerable<Func<IRefundService>> refundFactories,
+            IEnumerable<Func<IPayOrderCloseService>> closeFactories,
             ILoggerFactory loggerFactory)
         {
             _paymentFactories = (paymentFactories ?? Array.Empty<Func<IPaymentService>>()).ToList();
             _queryFactories = (queryFactories ?? Array.Empty<Func<IPayOrderQueryService>>()).ToList();
             _refundFactories = (refundFactories ?? Array.Empty<Func<IRefundService>>()).ToList();
+            _closeFactories = (closeFactories ?? Array.Empty<Func<IPayOrderCloseService>>()).ToList();
             PayLogger.Initialize(loggerFactory);
         }
 
@@ -95,6 +101,17 @@ namespace B.Unified.Payment.Abstract.Factory
                     return service;
             }
             throw new InvalidOperationException($"未注册 ifCode='{ifCode}' 的 IRefundService");
+        }
+
+        public IPayOrderCloseService GetCloseService(string ifCode)
+        {
+            foreach (var create in _closeFactories)
+            {
+                var service = create();
+                if (service.GetIfCode() == ifCode)
+                    return service;
+            }
+            throw new InvalidOperationException($"未注册 ifCode='{ifCode}' 的 IPayOrderCloseService");
         }
 
         private IPaymentService ResolvePaymentService(Func<IPaymentService, bool> predicate)
