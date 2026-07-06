@@ -1,24 +1,23 @@
-using Aop.Api.Domain;
 using System.Threading.Tasks;
+using Aop.Api.Domain;
 using Aop.Api.Request;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Diagnostics;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.Alipay.Constants;
 using B.Unified.Payment.Alipay.Models;
-using Newtonsoft.Json;
 
 namespace B.Unified.Payment.Alipay.PayWay
 {
-    /// <summary>
-    /// 支付宝扫码支付（ALI_QR）— 商家展示二维码，用户扫码支付。
-    /// <para>返回值：AliQrOrderRS.CodeUrl | ChannelState: WAITING</para>
-    /// </summary>
-    public class AliQr : IAliPayWay
+    /// <summary>支付宝扫码支付（ALI_QR）</summary>
+    public class AliQr : AlipayPayServiceBase
     {
-        public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx) => null;
+        public override bool IsSupport(string wayCode) => wayCode == AlipayPayWay.QR;
 
-        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        protected override string PreCheckWay(UnifiedOrderRQ rq, MchAppConfigContext ctx) => null;
+
+        protected override Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var client = AlipayClientFactory.Build(ctx);
             var model = new AlipayTradePrecreateModel
@@ -47,7 +46,7 @@ namespace B.Unified.Payment.Alipay.PayWay
                 PayLogger.LogResponse("Alipay", "ALI_QR", new { resp.QrCode, resp.Code, resp.Msg }, ret);
             }
             else
-            { 
+            {
                 var ret = new ChannelRetMsg
                 {
                     ChannelErrCode = resp.SubCode ?? resp.Code,
@@ -58,7 +57,7 @@ namespace B.Unified.Payment.Alipay.PayWay
                 rs.OrderState = PayOrderState.Failed;
                 PayLogger.LogResponse("Alipay", "ALI_QR", new { resp.Code, resp.SubCode, resp.Msg, resp.SubMsg }, ret);
             }
-            return rs;
+            return Task.FromResult<AbstractRS>(rs);
         }
     }
 }

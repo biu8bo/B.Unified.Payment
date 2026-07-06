@@ -1,0 +1,24 @@
+using System;
+using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.Weixin.Constants;
+
+namespace B.Unified.Payment.Weixin.PayWay
+{
+    /// <summary>微信支付服务基类 — 公共参数校验</summary>
+    public abstract class WxPayServiceBase : AbstractPaymentService
+    {
+        public override string GetIfCode() => IfCode.WXPAY;
+
+        protected override string ValidateCommon(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        {
+            if (rq == null) return "请求参数不能为空";
+            if (string.IsNullOrEmpty(rq.PayOrderId)) return "PayOrderId 不能为空";
+            if (rq.Amount == null || rq.Amount <= 0) return "支付金额无效";
+            if (string.IsNullOrEmpty(rq.Body)) return "商品描述不能为空";
+            if (string.IsNullOrEmpty(rq.NotifyUrl)) return "NotifyUrl 不能为空";
+            return null;
+        }
+    }
+}

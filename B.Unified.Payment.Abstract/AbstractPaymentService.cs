@@ -5,8 +5,8 @@ using B.Unified.Payment.Abstract.Models.Payment;
 namespace B.Unified.Payment.Abstract
 {
     /// <summary>
-    /// 支付服务抽象基类 — 模板方法模式：PayAsync() 先执行 PreCheck() 再执行 ExecutePayAsync()。
-    /// <para>子类只需实现 GetIfCode / IsSupport / ExecutePayAsync，按需覆写 PreCheck。</para>
+    /// 支付服务抽象基类 — 模板方法：ValidateCommon → PreCheckWay → ExecutePayAsync → FinalizePayData。
+    /// <para>子类实现渠道公共校验、支付方式专项校验及支付执行逻辑。</para>
     /// </summary>
     public abstract class AbstractPaymentService : IPaymentService
     {
@@ -15,9 +15,7 @@ namespace B.Unified.Payment.Abstract
         public abstract string GetIfCode();
         public abstract bool IsSupport(string wayCode);
 
-        /// <summary>
-        /// 模板方法 — 先校验再支付
-        /// </summary>
+        /// <summary>模板方法 — 先校验再支付</summary>
         public virtual async Task<AbstractRS> PayAsync(UnifiedOrderRQ bizRQ, MchAppConfigContext ctx)
         {
             try
@@ -74,15 +72,25 @@ namespace B.Unified.Payment.Abstract
 
         #endregion
 
-        #region 子类可覆写
+        #region 子类实现
 
-        /// <summary>前置参数校验，返回错误描述（null/空表示通过）</summary>
-        protected virtual string PreCheck(UnifiedOrderRQ bizRQ, MchAppConfigContext ctx) => null;
+        /// <summary>渠道公共参数校验</summary>
+        protected virtual string ValidateCommon(UnifiedOrderRQ rq, MchAppConfigContext ctx) => null;
 
-        /// <summary>执行支付（子类必须实现）</summary>
-        protected abstract Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ bizRQ, MchAppConfigContext ctx);
+        /// <summary>支付方式专项校验</summary>
+        protected abstract string PreCheckWay(UnifiedOrderRQ rq, MchAppConfigContext ctx);
+
+        /// <summary>执行支付</summary>
+        protected abstract Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx);
 
         #endregion
+
+        private string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        {
+            var err = ValidateCommon(rq, ctx);
+            if (!string.IsNullOrEmpty(err)) return err;
+            return PreCheckWay(rq, ctx);
+        }
 
         private static AbstractRS Finalize(AbstractRS rs)
         {

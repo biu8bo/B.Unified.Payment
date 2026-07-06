@@ -1,29 +1,26 @@
-using B.Unified.Payment.Abstract;
 using System.Threading.Tasks;
+using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.Weixin.Constants;
 using B.Unified.Payment.Weixin.Models;
 
 namespace B.Unified.Payment.Weixin.PayWay
 {
-    /// <summary>
-    /// 微信小程序支付（WX_LITE）— 用户在微信小程序中完成支付。
-    /// <para>与 JSAPI 完全一致，复用 POST /v3/pay/transactions/jsapi。</para>
-    /// <para>返回值：WxLiteOrderRS.PayInfo (小程序调起参数 JSON) | ChannelState: WAITING</para>
-    /// </summary>
-    public class WxLite : IWxPayWay
+    /// <summary>微信小程序支付（WX_LITE）</summary>
+    public class WxLite : WxPayServiceBase
     {
-        private readonly WxJsapi _jsapi = new WxJsapi();
+        public override bool IsSupport(string wayCode) => wayCode == WxPayWay.LITE;
 
-        /// <summary>前置校验：复用 WxJsapi 的校验逻辑</summary>
-        public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx)
-            => _jsapi.PreCheck(rq, ctx);
-
-        /// <summary>执行小程序支付 — 复用 JSAPI 支付逻辑</summary>
-        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        protected override string PreCheckWay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
-            var result = await _jsapi.PayAsync(rq, ctx);
-            // 如果有 prepay_id 返回，包装为 WxLiteOrderRS
+            if (string.IsNullOrEmpty(rq.ChannelUserId)) return "JSAPI 支付 openid 不能为空";
+            return null;
+        }
+
+        protected override async Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        {
+            var result = await new WxJsapi().PayAsync(rq, ctx);
             if (result is WxJsapiOrderRS jsapiRs && jsapiRs.PayInfo != null)
             {
                 return new WxLiteOrderRS

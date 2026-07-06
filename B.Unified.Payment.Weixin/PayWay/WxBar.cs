@@ -1,35 +1,36 @@
 using System;
 using System.Net.Http;
 using System.Text;
-using B.Unified.Payment.Abstract;
 using System.Threading.Tasks;
+using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Diagnostics;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.Weixin.Constants;
+using B.Unified.Payment.Weixin.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace B.Unified.Payment.Weixin.PayWay
 {
-    /// <summary>
-    /// 微信付款码支付 — POST /v3/pay/transactions/micropay
-    /// <para>Senparc SDK 未提供 MicroPayAsync，此处保留原始 HTTP + V3 签名实现。</para>
-    /// </summary>
-    public class WxBar : IWxPayWay
+    /// <summary>微信付款码支付（WX_BAR）</summary>
+    public class WxBar : WxPayServiceBase
     {
         private const string BaseUrl = "https://api.mch.weixin.qq.com";
         private static readonly HttpClient _http = new HttpClient();
 
-        public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        public override bool IsSupport(string wayCode) => wayCode == WxPayWay.BAR;
+
+        protected override string PreCheckWay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             if (string.IsNullOrEmpty(rq.AuthCode)) return "条码支付 AuthCode 不能为空";
             return null;
         }
 
-        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        protected override async Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var cfg = WxPayHelper.GetConfig(ctx);
-            var path = "/v3/pay/transactions/micropay";
+            const string path = "/v3/pay/transactions/micropay";
             var body = new
             {
                 appid = cfg.AppId, mchid = cfg.MchId, description = rq.Body,
@@ -42,8 +43,8 @@ namespace B.Unified.Payment.Weixin.PayWay
 
             PayLogger.LogRequest("Weixin", "WX_BAR", path, body);
 
-            var resp = await PostJsonSigned(cfg, path, json);
-            var rs = new Models.WxBarOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
+            var resp = await PostJsonSignedAsync(cfg, path, json);
+            var rs = new WxBarOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
             rs.ChannelOriginResponse = resp.ToString();
 
             var ret = new ChannelRetMsg();
@@ -72,8 +73,7 @@ namespace B.Unified.Payment.Weixin.PayWay
             return rs;
         }
 
-        /// <summary>发起 V3 签名的 POST 请求并解析返回 JSON</summary>
-        private static async Task<JObject> PostJsonSigned(Models.WxpayNormalMchParams cfg, string path, string json)
+        private static async Task<JObject> PostJsonSignedAsync(WxpayNormalMchParams cfg, string path, string json)
         {
             var req = new HttpRequestMessage(HttpMethod.Post, BaseUrl + path)
             {
@@ -87,8 +87,7 @@ namespace B.Unified.Payment.Weixin.PayWay
             return JObject.Parse(body);
         }
 
-        /// <summary>V3 签名并添加到请求头</summary>
-        private static void SignAsV3(HttpRequestMessage req, Models.WxpayNormalMchParams cfg, string method, string path, string body)
+        private static void SignAsV3(HttpRequestMessage req, WxpayNormalMchParams cfg, string method, string path, string body)
         {
             var ts = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
             var nonce = Guid.NewGuid().ToString("N");

@@ -1,25 +1,27 @@
-using Aop.Api.Domain;
 using System.Threading.Tasks;
+using Aop.Api.Domain;
 using Aop.Api.Request;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Diagnostics;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.Alipay.Constants;
+using B.Unified.Payment.Alipay.Models;
 
 namespace B.Unified.Payment.Alipay.PayWay
 {
-    /// <summary>
-    /// 支付宝条码支付（ALI_BAR）— 用户出示付款码，商家扫码收款。
-    /// </summary>
-    public class AliBar : IAliPayWay
+    /// <summary>支付宝条码支付（ALI_BAR）</summary>
+    public class AliBar : AlipayPayServiceBase
     {
-        public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        public override bool IsSupport(string wayCode) => wayCode == AlipayPayWay.BAR;
+
+        protected override string PreCheckWay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             if (string.IsNullOrEmpty(rq.AuthCode)) return "条码支付 authCode 不能为空";
             return null;
         }
 
-        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        protected override Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var client = AlipayClientFactory.Build(ctx);
             var model = new AlipayTradePayModel
@@ -28,12 +30,14 @@ namespace B.Unified.Payment.Alipay.PayWay
                 Subject = rq.Subject, Body = rq.Body, TotalAmount = rq.GetAmountYuan(),
                 TimeExpire = rq.ExpiredTime?.ToString("yyyy-MM-dd HH:mm:ss")
             };
-            var req = new AlipayTradePayRequest(); req.SetBizModel(model); req.SetNotifyUrl(rq.NotifyUrl);
+            var req = new AlipayTradePayRequest();
+            req.SetBizModel(model);
+            req.SetNotifyUrl(rq.NotifyUrl);
 
             PayLogger.LogRequest("Alipay", "ALI_BAR", "alipay.trade.pay", new { model.OutTradeNo, model.Scene, model.TotalAmount });
 
             var resp = client.Execute(req);
-            var rs = new Models.AliBarOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
+            var rs = new AliBarOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
             rs.ChannelOriginResponse = resp.Body;
             var ret = new ChannelRetMsg
             {
@@ -52,7 +56,7 @@ namespace B.Unified.Payment.Alipay.PayWay
             }
             rs.ChannelRetMsg = ret;
             PayLogger.LogResponse("Alipay", "ALI_BAR", new { resp.Code, resp.TradeNo, resp.BuyerUserId }, ret);
-            return rs;
+            return Task.FromResult<AbstractRS>(rs);
         }
     }
 }

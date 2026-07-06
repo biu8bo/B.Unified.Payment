@@ -16,7 +16,7 @@ public class PaymentController : ControllerBase
     [HttpPost("pay")]
     public async Task<IActionResult> Pay([FromBody] PayRequest req)
     {
-        var service = _factory.GetPaymentService(req.IfCode);
+        var service = _factory.GetPaymentService(req.IfCode, req.WayCode);
         var rq = new UnifiedOrderRQ
         {
             PayOrderId     = $"TEST{DateTime.Now:yyyyMMddHHmmssfff}",

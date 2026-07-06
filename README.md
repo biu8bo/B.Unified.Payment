@@ -20,9 +20,9 @@ B.Unified.Payment 是一套 .NET 统一支付 SDK，参考 [Jeepay](https://gith
 
 - **抽象层零业务依赖** — `Abstract` 项目只包含接口、抽象类、共享 DTO、工厂，不含渠道具体实现
 - **渠道实现隔离** — 每个支付渠道（Alipay / Weixin / YsfPay）是独立类库，互不引用，按需安装
-- **内置 DI 支持** — 每个渠道自带 `AddAlipayPayment()` / `AddWeixinPayment()` 扩展方法，工厂根据 ifCode 自动路由
+- **内置 DI 支持** — 每个渠道自带 `AddAlipayPayment()` / `AddWeixinPayment()` 扩展方法，工厂根据 `ifCode` + `wayCode` 自动路由到对应 PayWay 实现
 - **统一接口** — `IPaymentService` / `IPayOrderQueryService` / `IRefundService` 统一支付、查单、退款能力
-- **强类型安全** — `PayWayCode` 值类替代字符串常量，编译期防止拼写错误
+- **强类型安全** — `PayWayCode` / `PayDataTypeCode` 值类、`PayOrderState` 枚举，编译期防止拼写错误
 - **内置日志** — `PayLogger` 基于 `Microsoft.Extensions.Logging`，支持标准 .NET 日志体系
 - **全异步** — 所有接口方法均为 `Task` 异步（`PayAsync` / `QueryAsync` / `RefundAsync`）
 - **盛派 SDK** — 微信支付模块使用 [Senparc.Weixin.TenPayV3](https://github.com/JeffreySu/WeiXinMPSDK)，签名和 HTTP 调用均由 SDK 内部完成
@@ -57,14 +57,17 @@ B.Unified.Payment 是一套 .NET 统一支付 SDK，参考 [Jeepay](https://gith
 | `IPaymentService` | 统一支付 | `Task<AbstractRS> PayAsync(UnifiedOrderRQ, MchAppConfigContext)` |
 | `IPayOrderQueryService` | 支付订单查询 | `Task<ChannelRetMsg> QueryAsync(payOrderId, MchAppConfigContext)` |
 | `IRefundService` | 退款 + 退款查单 | `Task<ChannelRetMsg> RefundAsync(RefundOrderRQ, ctx)` / `Task<ChannelRetMsg> QueryAsync(...)` |
-| `IPaymentServiceFactory` | 服务工厂 | `GetPaymentService(ifCode)` / `GetQueryService(ifCode)` / `GetRefundService(ifCode)` |
+| `IPaymentServiceFactory` | 服务工厂 | `GetPaymentService(ifCode, wayCode)` / `GetQueryService(ifCode)` / `GetRefundService(ifCode)` |
 
 ### 其他特性
 
 - `AbstractRS.ChannelOriginResponse` — 每个响应包含渠道原始返回 JSON，便于排查
-- `PayLogger` — 基于 `Microsoft.Extensions.Logging`，`PayLogger.Configure(loggerFactory)` 即可启用
-- `AbstractPaymentService` — 模板方法模式，PreCheck → ExecutePayAsync，自动异常捕获
-- `PayWayCode` — 值类（`==` / `Equals` / 隐式 `string`），强类型防拼写错误
+- `PayLogger` — 基于 `Microsoft.Extensions.Logging`，工厂构造时自动初始化
+- `AbstractPaymentService` — 模板方法：`ValidateCommon` → `PreCheckWay` → `ExecutePayAsync` → `FinalizePayData`，自动异常捕获
+- 每个 PayWay 类（如 `AliQr`、`WxJsapi`）直接实现 `IPaymentService`，由工厂按 `wayCode` 路由
+- `PayWayCode` / `PayDataTypeCode` — 值类（`==` / `Equals` / 隐式 `string`），强类型防拼写错误
+- `PayOrderState` — 支付订单状态枚举（与 Jeepay `orderState` 数值对齐）
+- `UnifiedOrderRS.FinalizePayData()` — 自动填充 `PayDataType` / `PayData`（对齐 Jeepay 统一下单响应逻辑）
 - 微信模块使用 [Senparc.Weixin.TenPayV3](https://github.com/JeffreySu/WeiXinMPSDK)，无需手动计算 RSA 签名
 - 秘钥统一从 `keys.json` 读取，已在 `.gitignore` 中忽略
 
@@ -76,11 +79,14 @@ B.Unified.Payment/
 │   ├── IPaymentService.cs               #   统一支付接口
 │   ├── IPayOrderQueryService.cs         #   统一查单接口
 │   ├── IRefundService.cs                #   统一退款接口
-│   ├── PaymentServiceFactory.cs         #   服务工厂（ifCode → 实现路由）
+│   ├── PaymentServiceFactory.cs         #   服务工厂（ifCode + wayCode → PayWay 路由）
 │   ├── AbstractPaymentService.cs        #   支付抽象基类（模板方法）
 │   ├── Models/
 │   │   ├── PayWayCode.cs                #   支付方式值类
-│   │   ├── ChannelRetMsg.cs             #   渠道状态消息（6 种状态）
+│   │   ├── Payment/PayDataTypeCode.cs   #   支付参数类型值类
+│   │   ├── Payment/PayOrderState.cs     #   订单状态枚举
+│   │   ├── ChannelState.cs              #   渠道状态枚举
+│   │   ├── ChannelRetMsg.cs             #   渠道状态消息包装
 │   │   ├── MchAppConfigContext.cs       #   商户配置上下文（仅普通商户模式）
 │   │   ├── Payment/UnifiedOrderRQ.cs    #   统一支付请求
 │   │   ├── Payment/UnifiedOrderRS.cs    #   统一支付响应
@@ -91,8 +97,7 @@ B.Unified.Payment/
 ├── B.Unified.Payment.Alipay/            # 支付宝实现
 │   ├── Constants/                       #   IfCode + AlipayPayWay 常量
 │   ├── Models/                          #   AlipayNormalMchParams + 8 个 RS
-│   ├── PayWay/                          #   8 个独立 PayWay + ClientFactory
-│   ├── AlipayPaymentService.cs          #   支付入口
+│   ├── PayWay/                          #   8 个 PayWay（各实现 IPaymentService）+ ClientFactory
 │   ├── AlipayPayOrderQueryService.cs    #   查单
 │   ├── AlipayRefundService.cs           #   退款
 │   └── AlipayServiceCollectionExtensions.cs  # DI: AddAlipayPayment()
@@ -100,18 +105,16 @@ B.Unified.Payment/
 ├── B.Unified.Payment.Weixin/            # 微信支付实现（Senparc SDK）
 │   ├── Constants/                       #   IfCode + WxPayWay 常量
 │   ├── Models/                          #   WxpayNormalMchParams + 6 个 RS
-│   ├── PayWay/                          #   6 个独立 PayWay + WxPayHelper
-│   ├── WeixinPaymentService.cs          #   支付入口
+│   ├── PayWay/                          #   6 个 PayWay（各实现 IPaymentService）+ WxPayHelper
 │   ├── WeixinPayOrderQueryService.cs    #   查单（Senparc: OrderQueryByOutTradeNoAsync）
 │   ├── WeixinRefundService.cs           #   退款（Senparc: RefundAsync / RefundQueryAsync）
 │   └── WeixinServiceCollectionExtensions.cs  # DI: AddWeixinPayment()
 │
 ├── B.Unified.Payment.YsfPay/            # 云闪付实现
-│   ├── Constants/                       #   IfCode 常量
+│   ├── Constants/                       #   IfCode + YsfPayWay 常量
 │   ├── Models/                          #   YsfpayIsvParams + RS
-│   ├── PayWay/                          #   YsfBar + YsfJsapi
+│   ├── PayWay/                          #   YsfBar + YsfJsapi（各实现 IPaymentService）
 │   ├── YsfHttpUtil.cs                   #   RSA SHA256withRSA 签名 + HTTP
-│   ├── YsfpayPaymentService.cs          #   支付入口
 │   ├── YsfpayPayOrderQueryService.cs    #   查单
 │   ├── YsfpayRefundService.cs           #   退款
 │   └── YsfPayServiceCollectionExtensions.cs  # DI: AddYsfPayPayment()
@@ -138,10 +141,13 @@ cp keys.template.json keys.json
 ### 2. 直接调用示例
 
 ```csharp
+using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
-using B.Unified.Payment.Alipay;
 using B.Unified.Payment.Alipay.Constants;
+using B.Unified.Payment.Alipay.Models;
+using B.Unified.Payment.Alipay.PayWay;
+using Microsoft.Extensions.Logging.Abstractions;
 
 // 构建配置
 var config = new MchAppConfigContext();
@@ -159,7 +165,17 @@ var rq = new UnifiedOrderRQ
     NotifyUrl = "https://your-domain.com/api/notify/alipay"
 };
 
-var service = new AlipayPaymentService();
+// 方式 A：工厂路由（推荐）
+var factory = new PaymentServiceFactory(
+    new IPaymentService[] { new AliBar(), new AliPc(), new AliWap(), new AliJsapi(), new AliApp(), new AliQr(), new AliLite(), new AliOc() },
+    Array.Empty<IPayOrderQueryService>(),
+    Array.Empty<IRefundService>(),
+    NullLoggerFactory.Instance);
+var service = factory.GetPaymentService(IfCode.ALIPAY, AlipayPayWay.QR);
+
+// 方式 B：直接实例化对应 PayWay
+// var service = new AliQr();
+
 var rs = (UnifiedOrderRS)await service.PayAsync(rq, config);
 ```
 
@@ -186,7 +202,7 @@ public class PaymentController : ControllerBase
     [HttpPost("pay")]
     public async Task<IActionResult> Pay([FromBody] PayRequest req)
     {
-        var service = _factory.GetPaymentService(req.IfCode); // "alipay"/"wxpay"/"ysfpay"
+        var service = _factory.GetPaymentService(req.IfCode, req.WayCode); // ifCode + wayCode
         var rs = await service.PayAsync(buildRq(req), loadConfig(req.IfCode));
         return Ok(rs);
     }
@@ -225,7 +241,7 @@ curl -X POST http://localhost:5000/api/payment/pay \
 
 ## 渠道状态映射
 
-所有渠道通过 `ChannelRetMsg.ChannelState` 返回统一状态：
+所有渠道通过 `ChannelState` 枚举返回统一状态（包装在 `ChannelRetMsg.State` 中）：
 
 | 状态 | 含义 | 支付宝 | 微信 V3 | 云闪付 |
 |------|------|--------|--------|--------|

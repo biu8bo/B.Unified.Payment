@@ -1,14 +1,23 @@
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models.Payment;
-using B.Unified.Payment.Alipay;
 using B.Unified.Payment.Alipay.Constants;
+using B.Unified.Payment.Alipay.PayWay;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace B.Unified.Payment.AlipaySample;
 
 /// <summary>支付宝支付 Demo — 8 种支付方式示例</summary>
 public static class AlipayPayDemo
 {
-    private static readonly AlipayPaymentService _service = new();
+    private static readonly IPaymentServiceFactory _factory = new PaymentServiceFactory(
+        new Abstract.IPaymentService[]
+        {
+            new AliBar(), new AliPc(), new AliWap(), new AliJsapi(),
+            new AliApp(), new AliQr(), new AliLite(), new AliOc()
+        },
+        Array.Empty<IPayOrderQueryService>(),
+        Array.Empty<IRefundService>(),
+        NullLoggerFactory.Instance);
 
     public static void Run()
     {        Console.WriteLine("╔══════════════════════════════════════════╗");
@@ -34,7 +43,7 @@ public static class AlipayPayDemo
         Console.ResetColor();
     }
 
-    private static void Pay(string title, PayWayCode wayCode, Action<UnifiedOrderRQ>? setup = null)
+    private static void Pay(string title, Abstract.Models.PayWayCode wayCode, Action<UnifiedOrderRQ>? setup = null)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine($"\n═══ {title} ═══");
@@ -45,7 +54,7 @@ public static class AlipayPayDemo
             PayOrderId  = $"TEST{DateTime.Now:yyyyMMddHHmmssfff}",
             MchOrderNo  = $"MCH{DateTime.Now:yyyyMMddHHmmss}",
             WayCode     = wayCode,
-            Amount      = 100, // 1 元
+            Amount      = 100,
             Subject     = title,
             Body        = title,
             NotifyUrl   = "https://your-domain.com/api/notify/alipay",
@@ -55,7 +64,8 @@ public static class AlipayPayDemo
         setup?.Invoke(rq);
 
         Console.WriteLine($"  请求: PayOrderId={rq.PayOrderId} Amount={rq.Amount / 100m:F2}元");
-        var rs = (UnifiedOrderRS)_service.PayAsync(rq, AlipayConfig.Context).GetAwaiter().GetResult();
+        var service = _factory.GetPaymentService(IfCode.ALIPAY, wayCode);
+        var rs = (UnifiedOrderRS)service.PayAsync(rq, AlipayConfig.Context).GetAwaiter().GetResult();
 
         Console.ForegroundColor = rs.ErrCode == null ? ConsoleColor.Green : ConsoleColor.Red;
         Console.WriteLine($"  响应: ErrCode={rs.ErrCode} State={rs.ChannelRetMsg?.State} PayDataType={rs.PayDataType}");

@@ -1,21 +1,25 @@
-using B.Unified.Payment.Abstract;
 using System.Threading.Tasks;
+using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.YsfPay.Constants;
+using B.Unified.Payment.YsfPay.Models;
 using Newtonsoft.Json.Linq;
 
 namespace B.Unified.Payment.YsfPay.PayWay
 {
-    /// <summary>云闪付条码支付（YSF_BAR）— 用户出示付款码，商家扫码收款</summary>
-    public class YsfBar : IYsfPayWay
+    /// <summary>云闪付条码支付（YSF_BAR）</summary>
+    public class YsfBar : YsfPayServiceBase
     {
-        public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        public override bool IsSupport(string wayCode) => wayCode == YsfPayWay.BAR;
+
+        protected override string PreCheckWay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             if (string.IsNullOrEmpty(rq.AuthCode)) return "条码支付 authCode 不能为空";
             return null;
         }
 
-        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        protected override Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var cfg = YsfpayConfigHelper.GetConfig(ctx);
             var orderType = YsfHttpUtil.GetPayOrderType("YSF_BAR");
@@ -32,7 +36,7 @@ namespace B.Unified.Payment.YsfPay.PayWay
 
             var resJson = YsfHttpUtil.PackageParamAndReq("/gateway/api/pay/micropay", reqParams, cfg);
             var respCode = resJson["respCode"]?.ToString();
-            var rs = new Models.YsfBarOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
+            var rs = new YsfBarOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
 
             if (respCode == "00")
                 rs.ChannelRetMsg = ChannelRetMsg.ConfirmSuccess(resJson["transIndex"]?.ToString());
@@ -41,7 +45,7 @@ namespace B.Unified.Payment.YsfPay.PayWay
             else
                 rs.ChannelRetMsg = ChannelRetMsg.ConfirmFail(respCode, resJson["respMsg"]?.ToString());
 
-            return rs;
+            return Task.FromResult<AbstractRS>(rs);
         }
     }
 }

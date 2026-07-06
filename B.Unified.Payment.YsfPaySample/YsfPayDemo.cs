@@ -1,12 +1,20 @@
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models.Payment;
-using B.Unified.Payment.YsfPay;
+using B.Unified.Payment.YsfPay.Constants;
+using B.Unified.Payment.YsfPay.PayWay;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace B.Unified.Payment.YsfPaySample;
 
 /// <summary>云闪付支付 Demo — 条码支付 + JSAPI 支付</summary>
 public static class YsfPayDemo
 {
+    private static readonly IPaymentServiceFactory _factory = new PaymentServiceFactory(
+        new Abstract.IPaymentService[] { new YsfBar(), new YsfJsapi() },
+        Array.Empty<IPayOrderQueryService>(),
+        Array.Empty<IRefundService>(),
+        NullLoggerFactory.Instance);
+
     public static void Run()
     {
         Console.WriteLine("╔══════════════════════════════════════════╗");
@@ -14,15 +22,13 @@ public static class YsfPayDemo
         Console.WriteLine("╚══════════════════════════════════════════╝");
         Console.WriteLine("  ⚠ 请先在 YsfpayConfig.cs 中替换为真实商户参数");
 
-        var service = new YsfpayPaymentService();
-
         // 1) JSAPI 支付
         Console.WriteLine("\n═══ YSF_JSAPI — JSAPI 支付 ═══");
         var jsapiRq = new UnifiedOrderRQ
         {
             PayOrderId  = $"YSF{DateTime.Now:yyyyMMddHHmmssfff}",
             MchOrderNo  = $"MCH{DateTime.Now:yyyyMMddHHmmss}",
-            WayCode     = PayWayCode.Of("YSF_JSAPI"),
+            WayCode     = YsfPayWay.JSAPI,
             Amount      = 100,
             Body        = "云闪付JSAPI测试",
             Subject     = "云闪付JSAPI测试",
@@ -33,7 +39,8 @@ public static class YsfPayDemo
         };
 
         Console.WriteLine($"  请求: PayOrderId={jsapiRq.PayOrderId} Amount={jsapiRq.Amount / 100m:F2}元");
-        var jsapiRs = (UnifiedOrderRS)service.PayAsync(jsapiRq, YsfpayConfig.Context).GetAwaiter().GetResult();
+        var jsapiService = _factory.GetPaymentService(IfCode.YSFPAY, YsfPayWay.JSAPI);
+        var jsapiRs = (UnifiedOrderRS)jsapiService.PayAsync(jsapiRq, YsfpayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  响应: ErrCode={jsapiRs.ErrCode} State={jsapiRs.ChannelRetMsg?.State}");
         Console.WriteLine($"  PayDataType={jsapiRs.PayDataType} PayData={jsapiRs.PayData?.Truncate(100)}");
 
@@ -43,7 +50,7 @@ public static class YsfPayDemo
         {
             PayOrderId  = $"YSF{DateTime.Now:yyyyMMddHHmmssfff}",
             MchOrderNo  = $"MCH{DateTime.Now:yyyyMMddHHmmss}",
-            WayCode     = PayWayCode.Of("YSF_BAR"),
+            WayCode     = YsfPayWay.BAR,
             Amount      = 100,
             Body        = "云闪付条码测试",
             Subject     = "云闪付条码测试",
@@ -53,7 +60,8 @@ public static class YsfPayDemo
         };
 
         Console.WriteLine($"  请求: PayOrderId={barRq.PayOrderId} Amount={barRq.Amount / 100m:F2}元");
-        var barRs = (UnifiedOrderRS)service.PayAsync(barRq, YsfpayConfig.Context).GetAwaiter().GetResult();
+        var barService = _factory.GetPaymentService(IfCode.YSFPAY, YsfPayWay.BAR);
+        var barRs = (UnifiedOrderRS)barService.PayAsync(barRq, YsfpayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  响应: ErrCode={barRs.ErrCode} State={barRs.ChannelRetMsg?.State}");
         Console.WriteLine($"  IsNeedQuery={barRs.ChannelRetMsg?.IsNeedQuery}");
 

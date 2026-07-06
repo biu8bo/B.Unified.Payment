@@ -1,32 +1,29 @@
-using Aop.Api.Domain;
 using System.Threading.Tasks;
+using Aop.Api.Domain;
 using Aop.Api.Request;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.Alipay.Constants;
 using B.Unified.Payment.Alipay.Models;
 
 namespace B.Unified.Payment.Alipay.PayWay
 {
-    /// <summary>
-    /// 支付宝生活号 / JSAPI 支付（ALI_JSAPI）— 用户在支付宝内嵌 H5 中完成支付。
-    /// <para>返回值：AliJsapiOrderRS.AlipayTradeNo | ChannelState: WAITING</para>
-    /// </summary>
-    public class AliJsapi : IAliPayWay
+    /// <summary>支付宝生活号 / JSAPI 支付（ALI_JSAPI）</summary>
+    public class AliJsapi : AlipayPayServiceBase
     {
-        /// <summary>前置校验：ChannelUserId(buyerId) 不能为空</summary>
-        public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        public override bool IsSupport(string wayCode) => wayCode == AlipayPayWay.JSAPI;
+
+        protected override string PreCheckWay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             if (string.IsNullOrEmpty(rq.ChannelUserId))
                 return "JSAPI 支付 ChannelUserId(buyer_id) 不能为空";
             return null;
         }
 
-        /// <summary>执行生活号支付 — 调用 alipay.trade.create 预创建订单</summary>
-        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        protected override Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var client = AlipayClientFactory.Build(ctx);
-
             var req = new AlipayTradeCreateRequest();
             req.SetBizModel(new AlipayTradeCreateModel
             {
@@ -59,7 +56,7 @@ namespace B.Unified.Payment.Alipay.PayWay
                 rs.AlipayTradeNo = resp.TradeNo;
             }
             rs.ChannelRetMsg = ret;
-            return rs;
+            return Task.FromResult<AbstractRS>(rs);
         }
     }
 }

@@ -1,20 +1,23 @@
-using B.Unified.Payment.Abstract;
 using System.Threading.Tasks;
+using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Diagnostics;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.Weixin.Constants;
+using B.Unified.Payment.Weixin.Models;
 using Newtonsoft.Json;
-using Senparc.Weixin.TenPayV3.Apis;
 using Senparc.Weixin.TenPayV3.Apis.BasePay;
 
 namespace B.Unified.Payment.Weixin.PayWay
 {
-    /// <summary>微信 H5 支付 — POST /v3/pay/transactions/h5（Senparc SDK）</summary>
-    public class WxH5 : IWxPayWay
+    /// <summary>微信 H5 支付（WX_H5）</summary>
+    public class WxH5 : WxPayServiceBase
     {
-        public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx) => null;
+        public override bool IsSupport(string wayCode) => wayCode == WxPayWay.H5;
 
-        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        protected override string PreCheckWay(UnifiedOrderRQ rq, MchAppConfigContext ctx) => null;
+
+        protected override async Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var cfg = WxPayHelper.GetConfig(ctx);
             var reqData = WxPayHelper.BuildReqData(rq, cfg);
@@ -27,7 +30,7 @@ namespace B.Unified.Payment.Weixin.PayWay
             PayLogger.LogRequest("Weixin", "WX_H5", "/v3/pay/transactions/h5", reqData);
 
             var result = await WxPayHelper.BuildApi(cfg).H5Async(reqData);
-            var rs = new Models.WxH5OrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
+            var rs = new WxH5OrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
             rs.ChannelOriginResponse = JsonConvert.SerializeObject(result);
 
             if (result.VerifySignSuccess == true && !string.IsNullOrEmpty(result.h5_url))

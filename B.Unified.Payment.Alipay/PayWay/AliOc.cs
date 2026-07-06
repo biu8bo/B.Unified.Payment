@@ -1,26 +1,24 @@
-using Aop.Api.Domain;
 using System.Threading.Tasks;
+using Aop.Api.Domain;
 using Aop.Api.Request;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.Alipay.Constants;
 using B.Unified.Payment.Alipay.Models;
 
 namespace B.Unified.Payment.Alipay.PayWay
 {
-    /// <summary>
-    /// 支付宝订单码支付（ALI_OC）— 用户出示订单二维码，商家扫码收款。
-    /// <para>API: alipay.trade.precreate（productCode=QR_CODE_OFFLINE）</para>
-    /// <para>返回值：AliOcOrderRS.CodeUrl | ChannelState: WAITING / CONFIRM_FAIL</para>
-    /// </summary>
-    public class AliOc : IAliPayWay
+    /// <summary>支付宝订单码支付（ALI_OC）</summary>
+    public class AliOc : AlipayPayServiceBase
     {
-        public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx) => null;
+        public override bool IsSupport(string wayCode) => wayCode == AlipayPayWay.OC;
 
-        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        protected override string PreCheckWay(UnifiedOrderRQ rq, MchAppConfigContext ctx) => null;
+
+        protected override Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var client = AlipayClientFactory.Build(ctx);
-
             var req = new AlipayTradePrecreateRequest();
             req.SetBizModel(new AlipayTradePrecreateModel
             {
@@ -29,7 +27,7 @@ namespace B.Unified.Payment.Alipay.PayWay
                 Body         = rq.Body,
                 TotalAmount  = rq.GetAmountYuan(),
                 TimeExpire   = rq.ExpiredTime?.ToString("yyyy-MM-dd HH:mm:ss"),
-                ProductCode  = "QR_CODE_OFFLINE"   // 订单码专用的产品码
+                ProductCode  = "QR_CODE_OFFLINE"
             });
             req.SetNotifyUrl(rq.NotifyUrl);
 
@@ -54,7 +52,7 @@ namespace B.Unified.Payment.Alipay.PayWay
                 rs.ChannelRetMsg = ret;
                 rs.OrderState = PayOrderState.Failed;
             }
-            return rs;
+            return Task.FromResult<AbstractRS>(rs);
         }
     }
 }

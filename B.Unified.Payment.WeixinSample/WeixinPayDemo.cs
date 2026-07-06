@@ -1,14 +1,23 @@
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models.Payment;
-using B.Unified.Payment.Weixin;
 using B.Unified.Payment.Weixin.Constants;
+using B.Unified.Payment.Weixin.PayWay;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace B.Unified.Payment.WeixinSample;
 
 /// <summary>微信支付 Demo — 6 种支付方式示例</summary>
 public static class WeixinPayDemo
 {
-    private static readonly WeixinPaymentService _service = new();
+    private static readonly IPaymentServiceFactory _factory = new PaymentServiceFactory(
+        new Abstract.IPaymentService[]
+        {
+            new WxJsapi(), new WxNative(), new WxH5(),
+            new WxApp(), new WxLite(), new WxBar()
+        },
+        Array.Empty<IPayOrderQueryService>(),
+        Array.Empty<IRefundService>(),
+        NullLoggerFactory.Instance);
 
     public static void Run()
     {        Console.WriteLine("╔══════════════════════════════════════════╗");
@@ -39,7 +48,7 @@ public static class WeixinPayDemo
         Console.ResetColor();
     }
 
-    private static void Pay(string title, PayWayCode wayCode, Action<UnifiedOrderRQ>? setup = null)
+    private static void Pay(string title, Abstract.Models.PayWayCode wayCode, Action<UnifiedOrderRQ>? setup = null)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine($"\n═══ {title} ═══");
@@ -59,7 +68,8 @@ public static class WeixinPayDemo
         setup?.Invoke(rq);
 
         Console.WriteLine($"  请求: PayOrderId={rq.PayOrderId} Amount={rq.Amount / 100m:F2}元");
-        var rs = (UnifiedOrderRS)_service.PayAsync(rq, WeixinConfig.Context).GetAwaiter().GetResult();
+        var service = _factory.GetPaymentService(IfCode.WXPAY, wayCode);
+        var rs = (UnifiedOrderRS)service.PayAsync(rq, WeixinConfig.Context).GetAwaiter().GetResult();
 
         Console.ForegroundColor = rs.ErrCode == null ? ConsoleColor.Green : ConsoleColor.Red;
         Console.WriteLine($"  响应: ErrCode={rs.ErrCode} State={rs.ChannelRetMsg?.State} PayDataType={rs.PayDataType}");
