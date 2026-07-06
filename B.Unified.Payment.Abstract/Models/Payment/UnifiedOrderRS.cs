@@ -31,8 +31,7 @@ namespace B.Unified.Payment.Abstract.Models.Payment
         /// <summary>错误信息</summary>
         public string ErrMsg { get; set; }
 
-        /// <summary>上游渠道响应（不参与 JSON 序列化输出给客户端）</summary>
-        [JsonIgnore]
+        /// <summary>上游渠道响应</summary> 
         public ChannelRetMsg ChannelRetMsg { get; set; }
 
         /// <summary>生成 PayDataType（子类覆写）</summary>
