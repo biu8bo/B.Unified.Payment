@@ -57,7 +57,7 @@ B.Unified.Payment 是一套 .NET 统一支付 SDK，参考 [Jeepay](https://gith
 | `IPaymentService` | 统一支付 | `Task<AbstractRS> PayAsync(UnifiedOrderRQ, MchAppConfigContext)` |
 | `IPayOrderQueryService` | 支付订单查询 | `Task<ChannelRetMsg> QueryAsync(payOrderId, MchAppConfigContext)` |
 | `IRefundService` | 退款 + 退款查单 | `Task<ChannelRetMsg> RefundAsync(RefundOrderRQ, ctx)` / `Task<ChannelRetMsg> QueryAsync(...)` |
-| `IPaymentServiceFactory` | 服务工厂 | `GetPaymentService(ifCode, wayCode)` / `GetQueryService(ifCode)` / `GetRefundService(ifCode)` |
+| `IPaymentServiceFactory` | 服务工厂 | `GetPaymentService(wayCode)` / `GetPaymentService(ifCode, wayCode)` / `GetQueryService(ifCode)` / `GetRefundService(ifCode)` |
 
 ### 其他特性
 
@@ -76,52 +76,60 @@ B.Unified.Payment 是一套 .NET 统一支付 SDK，参考 [Jeepay](https://gith
 ```
 B.Unified.Payment/
 ├── B.Unified.Payment.Abstract/          # 抽象层（接口 + 共享 DTO + 工厂）
-│   ├── IPaymentService.cs               #   统一支付接口
-│   ├── IPayOrderQueryService.cs         #   统一查单接口
-│   ├── IRefundService.cs                #   统一退款接口
-│   ├── PaymentServiceFactory.cs         #   服务工厂（ifCode + wayCode → PayWay 路由）
-│   ├── AbstractPaymentService.cs        #   支付抽象基类（模板方法）
+│   ├── Interfaces/                      #   IPaymentService / IPayOrderQueryService / IRefundService
+│   ├── Services/                        #   AbstractPaymentService（支付模板基类）
+│   ├── Factory/                         #   PaymentServiceBuilder + PaymentServiceFactory
 │   ├── Models/
 │   │   ├── PayWayCode.cs                #   支付方式值类
-│   │   ├── Payment/PayDataTypeCode.cs   #   支付参数类型值类
-│   │   ├── Payment/PayOrderState.cs     #   订单状态枚举
-│   │   ├── ChannelState.cs              #   渠道状态枚举
-│   │   ├── ChannelRetMsg.cs             #   渠道状态消息包装
-│   │   ├── MchAppConfigContext.cs       #   商户配置上下文（仅普通商户模式）
-│   │   ├── Payment/UnifiedOrderRQ.cs    #   统一支付请求
-│   │   ├── Payment/UnifiedOrderRS.cs    #   统一支付响应
-│   │   ├── Payment/CommonPayDataRS.cs   #   通用支付数据响应
-│   │   └── Refund/RefundOrderRQ.cs      #   退款请求
-│   └── Diagnostics/PayLogger.cs         #   日志工具
+│   │   ├── Base/                        #   AbstractRQ / AbstractRS
+│   │   ├── Channel/                     #   ChannelRetMsg / ChannelState
+│   │   ├── Mch/                         #   MchAppConfigContext / CertMode / EnvFlag / CurrencyCode
+│   │   ├── Payment/                     #   UnifiedOrderRQ/RS、PayDataTypeCode、PayOrderState 等
+│   │   └── Refund/                      #   RefundOrderRQ
+│   ├── Exceptions/                      #   BizException / ChannelException
+│   └── Diagnostics/                     #   PayLogger
 │
 ├── B.Unified.Payment.Alipay/            # 支付宝实现
 │   ├── Constants/                       #   IfCode + AlipayPayWay 常量
-│   ├── Models/                          #   AlipayNormalMchParams + 8 个 RS
-│   ├── PayWay/                          #   8 个 PayWay（各实现 IPaymentService）+ ClientFactory
-│   ├── AlipayPayOrderQueryService.cs    #   查单
-│   ├── AlipayRefundService.cs           #   退款
-│   └── AlipayServiceCollectionExtensions.cs  # DI: AddAlipayPayment()
+│   ├── Extensions/                      #   AddAlipayPayment() / AddAlipay() 注册扩展
+│   ├── Services/
+│   │   ├── Query/                       #   AlipayPayOrderQueryService
+│   │   └── Refund/                      #   AlipayRefundService
+│   ├── Models/
+│   │   ├── MchParams/                   #   AlipayNormalMchParams
+│   │   └── Responses/                   #   8 个 Ali*OrderRS
+│   ├── Infrastructure/                  #   AlipayClientFactory
+│   └── PayWay/                          #   8 个 PayWay（各实现 IPaymentService）
 │
 ├── B.Unified.Payment.Weixin/            # 微信支付实现（Senparc SDK）
 │   ├── Constants/                       #   IfCode + WxPayWay 常量
-│   ├── Models/                          #   WxpayNormalMchParams + 6 个 RS
-│   ├── PayWay/                          #   6 个 PayWay（各实现 IPaymentService）+ WxPayHelper
-│   ├── WeixinPayOrderQueryService.cs    #   查单（Senparc: OrderQueryByOutTradeNoAsync）
-│   ├── WeixinRefundService.cs           #   退款（Senparc: RefundAsync / RefundQueryAsync）
-│   └── WeixinServiceCollectionExtensions.cs  # DI: AddWeixinPayment()
+│   ├── Extensions/                      #   AddWeixinPayment() / AddWeixin() 注册扩展
+│   ├── Services/
+│   │   ├── Query/                       #   WeixinPayOrderQueryService
+│   │   └── Refund/                      #   WeixinRefundService
+│   ├── Models/
+│   │   ├── MchParams/                   #   WxpayNormalMchParams
+│   │   └── Responses/                   #   6 个 Wx*OrderRS
+│   ├── Infrastructure/                  #   WxPayHelper
+│   └── PayWay/                          #   6 个 PayWay（各实现 IPaymentService）
 │
 ├── B.Unified.Payment.YsfPay/            # 云闪付实现
 │   ├── Constants/                       #   IfCode + YsfPayWay 常量
-│   ├── Models/                          #   YsfpayIsvParams + RS
-│   ├── PayWay/                          #   YsfBar + YsfJsapi（各实现 IPaymentService）
-│   ├── YsfHttpUtil.cs                   #   RSA SHA256withRSA 签名 + HTTP
-│   ├── YsfpayPayOrderQueryService.cs    #   查单
-│   ├── YsfpayRefundService.cs           #   退款
-│   └── YsfPayServiceCollectionExtensions.cs  # DI: AddYsfPayPayment()
+│   ├── Extensions/                      #   AddYsfPayPayment() / AddYsfPay() 注册扩展
+│   ├── Services/
+│   │   ├── Query/                       #   YsfpayPayOrderQueryService
+│   │   └── Refund/                      #   YsfpayRefundService
+│   ├── Models/
+│   │   ├── MchParams/                   #   YsfpayIsvParams
+│   │   └── Responses/                   #   YsfOrderRS
+│   ├── Utils/                           #   YsfHttpUtil / YsfpayConfigHelper
+│   └── PayWay/                          #   YsfBar + YsfJsapi（各实现 IPaymentService）
 │
-├── B.Unified.Payment.AlipaySample/      # 支付宝控制台示例（支付/查单/退款）
-├── B.Unified.Payment.WeixinSample/      # 微信控制台示例（支付/查单/退款）
-├── B.Unified.Payment.YsfPaySample/      # 云闪付控制台示例（支付/查单/退款）
+├── B.Unified.Payment.AlipaySample/      # 支付宝控制台示例
+│   ├── Config/                          #   AlipayConfig
+│   └── Demos/                           #   Pay / Query / Refund Demo
+├── B.Unified.Payment.WeixinSample/      # 微信控制台示例（Config/ + Demos/）
+├── B.Unified.Payment.YsfPaySample/      # 云闪付控制台示例（Config/ + Demos/）
 ├── B.Unified.Payment.Sample.WebApi/     # Web API 示例（DI + 控制器）
 ├── keys.json                            # 秘钥配置（.gitignore 忽略）
 ├── keys.template.json                   # 秘钥模板
@@ -165,13 +173,17 @@ var rq = new UnifiedOrderRQ
     NotifyUrl = "https://your-domain.com/api/notify/alipay"
 };
 
-// 方式 A：工厂路由（推荐）
-var factory = new PaymentServiceFactory(
-    new IPaymentService[] { new AliBar(), new AliPc(), new AliWap(), new AliJsapi(), new AliApp(), new AliQr(), new AliLite(), new AliOc() },
-    Array.Empty<IPayOrderQueryService>(),
-    Array.Empty<IRefundService>(),
-    NullLoggerFactory.Instance);
-var service = factory.GetPaymentService(IfCode.ALIPAY, AlipayPayWay.QR);
+// 方式 A：Builder 一行注册（推荐，非 DI）
+using B.Unified.Payment.Alipay;
+
+var factory = PaymentServiceBuilder.Create().AddAlipay().Build();
+var service = factory.GetPaymentService(AlipayPayWay.QR);
+
+// 多渠道路由
+// var factory = PaymentServiceBuilder.Create().AddAlipay().AddWeixin().AddYsfPay().Build();
+
+// 扩展自定义支付方式
+// var factory = PaymentServiceBuilder.Create().AddAlipay().AddPaymentService<MyCustomPay>().Build();
 
 // 方式 B：直接实例化对应 PayWay
 // var service = new AliQr();
@@ -202,7 +214,7 @@ public class PaymentController : ControllerBase
     [HttpPost("pay")]
     public async Task<IActionResult> Pay([FromBody] PayRequest req)
     {
-        var service = _factory.GetPaymentService(req.IfCode, req.WayCode); // ifCode + wayCode
+        var service = _factory.GetPaymentService(req.WayCode); // 或 GetPaymentService(req.IfCode, req.WayCode)
         var rs = await service.PayAsync(buildRq(req), loadConfig(req.IfCode));
         return Ok(rs);
     }
@@ -212,17 +224,20 @@ public class PaymentController : ControllerBase
 ### 4. 查单 / 退款
 
 ```csharp
-// 查单
-var queryService = new AlipayPayOrderQueryService();
+// 通过工厂（与支付共用 Builder）
+var factory = PaymentServiceBuilder.Create().AddAlipay().Build();
+var queryService = factory.GetQueryService(IfCode.ALIPAY);
 var result = await queryService.QueryAsync("ORDER001", config);
 
-// 退款
-var refundService = new AlipayRefundService();
+var refundService = factory.GetRefundService(IfCode.ALIPAY);
 var result = await refundService.RefundAsync(new RefundOrderRQ
 {
     PayOrderId = "ORDER001", RefundOrderId = "RF001",
     RefundAmount = 100, RefundReason = "用户申请"
 }, config);
+
+// 或直接实例化
+// var queryService = new AlipayPayOrderQueryService();
 ```
 
 ### 5. 运行 Sample

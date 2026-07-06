@@ -1,19 +1,15 @@
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.YsfPay;
 using B.Unified.Payment.YsfPay.Constants;
-using B.Unified.Payment.YsfPay.PayWay;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace B.Unified.Payment.YsfPaySample;
 
 /// <summary>云闪付支付 Demo — 条码支付 + JSAPI 支付</summary>
 public static class YsfPayDemo
 {
-    private static readonly IPaymentServiceFactory _factory = new PaymentServiceFactory(
-        new Abstract.IPaymentService[] { new YsfBar(), new YsfJsapi() },
-        Array.Empty<IPayOrderQueryService>(),
-        Array.Empty<IRefundService>(),
-        NullLoggerFactory.Instance);
+    private static readonly IPaymentServiceFactory _factory =
+        PaymentServiceBuilder.Create().AddYsfPay().Build();
 
     public static void Run()
     {
@@ -39,7 +35,7 @@ public static class YsfPayDemo
         };
 
         Console.WriteLine($"  请求: PayOrderId={jsapiRq.PayOrderId} Amount={jsapiRq.Amount / 100m:F2}元");
-        var jsapiService = _factory.GetPaymentService(IfCode.YSFPAY, YsfPayWay.JSAPI);
+        var jsapiService = _factory.GetPaymentService(YsfPayWay.JSAPI);
         var jsapiRs = (UnifiedOrderRS)jsapiService.PayAsync(jsapiRq, YsfpayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  响应: ErrCode={jsapiRs.ErrCode} State={jsapiRs.ChannelRetMsg?.State}");
         Console.WriteLine($"  PayDataType={jsapiRs.PayDataType} PayData={jsapiRs.PayData?.Truncate(100)}");
@@ -60,7 +56,7 @@ public static class YsfPayDemo
         };
 
         Console.WriteLine($"  请求: PayOrderId={barRq.PayOrderId} Amount={barRq.Amount / 100m:F2}元");
-        var barService = _factory.GetPaymentService(IfCode.YSFPAY, YsfPayWay.BAR);
+        var barService = _factory.GetPaymentService(YsfPayWay.BAR);
         var barRs = (UnifiedOrderRS)barService.PayAsync(barRq, YsfpayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  响应: ErrCode={barRs.ErrCode} State={barRs.ChannelRetMsg?.State}");
         Console.WriteLine($"  IsNeedQuery={barRs.ChannelRetMsg?.IsNeedQuery}");
