@@ -1,4 +1,5 @@
 using System;
+using B.Unified.Payment.Abstract.Models;
 using Newtonsoft.Json;
 
 namespace B.Unified.Payment.Abstract.Models.Payment
@@ -50,7 +51,7 @@ namespace B.Unified.Payment.Abstract.Models.Payment
         public long? Amount { get; set; }
 
         /// <summary>货币代码，默认 CNY</summary>
-        public string Currency { get; set; } = "CNY";
+        public string Currency { get; set; } = CurrencyCode.CNY;
 
         #endregion
 

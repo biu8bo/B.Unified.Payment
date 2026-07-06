@@ -27,7 +27,7 @@ public static class AlipayConfig
             AppId           = keys["AppId"].ToString(),
             PrivateKey      = keys["PrivateKey"].ToString(),
             AlipayPublicKey = keys["AlipayPublicKey"].ToString(),
-            Sandbox         = (byte)(keys["Sandbox"].Value<int>()),
+            Sandbox         = (EnvFlag)keys["Sandbox"].Value<int>(),
             SignType        = keys["SignType"].ToString()
         };
         return ctx;

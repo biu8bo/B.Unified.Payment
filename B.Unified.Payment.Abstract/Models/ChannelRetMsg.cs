@@ -31,16 +31,6 @@ namespace B.Unified.Payment.Abstract.Models
         /// <summary>是否需要轮询查单，默认 false</summary>
         public bool IsNeedQuery { get; set; }
 
-        public enum ChannelState
-        {
-            CONFIRM_SUCCESS,  // 业务已明确成功
-            CONFIRM_FAIL,     // 业务已明确失败
-            WAITING,          // 上游处理中，需定时查询/回调
-            UNKNOWN,          // 状态不明确（网络异常等）
-            API_RET_ERROR,    // 渠道侧异常
-            SYS_ERROR         // 本系统不可预知异常
-        }
-
         // 静态工厂方法
         public static ChannelRetMsg ConfirmSuccess(string channelOrderId = null) =>
             new ChannelRetMsg { State = ChannelState.CONFIRM_SUCCESS, ChannelOrderId = channelOrderId };

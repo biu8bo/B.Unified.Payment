@@ -41,12 +41,12 @@ namespace B.Unified.Payment.Alipay.PayWay
             };
 
             if ("10000".Equals(resp.Code) && !resp.IsError)
-                ret.State = ChannelRetMsg.ChannelState.CONFIRM_SUCCESS;
+                ret.State = ChannelState.CONFIRM_SUCCESS;
             else if ("10003".Equals(resp.Code))
-                ret.State = ChannelRetMsg.ChannelState.WAITING;
+                ret.State = ChannelState.WAITING;
             else
             {
-                ret.State = ChannelRetMsg.ChannelState.CONFIRM_FAIL;
+                ret.State = ChannelState.CONFIRM_FAIL;
                 ret.ChannelErrCode = resp.SubCode ?? resp.Code;
                 ret.ChannelErrMsg = resp.SubMsg ?? resp.Msg;
             }

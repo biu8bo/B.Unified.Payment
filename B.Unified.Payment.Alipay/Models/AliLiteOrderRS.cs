@@ -10,6 +10,6 @@ namespace B.Unified.Payment.Alipay.Models
         /// <summary>支付宝交易号</summary>
         public string AlipayTradeNo { get; set; }
 
-        public override string BuildPayDataType() => "none";
+        public override PayDataTypeCode BuildPayDataType() => PayDataTypeCode.None;
     }
 }

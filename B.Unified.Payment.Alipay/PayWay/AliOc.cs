@@ -52,7 +52,7 @@ namespace B.Unified.Payment.Alipay.PayWay
                     ChannelAttach  = resp.Body
                 };
                 rs.ChannelRetMsg = ret;
-                rs.OrderState = 2; // STATE_FAIL
+                rs.OrderState = PayOrderState.Failed;
             }
             return rs;
         }

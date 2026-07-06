@@ -1,3 +1,5 @@
+using B.Unified.Payment.Abstract.Models;
+
 namespace B.Unified.Payment.Abstract.Models.Refund
 {
     /// <summary>
@@ -24,7 +26,7 @@ namespace B.Unified.Payment.Abstract.Models.Refund
         public string RefundReason { get; set; }
 
         /// <summary>货币代码，默认 CNY</summary>
-        public string Currency { get; set; } = "CNY";
+        public string Currency { get; set; } = CurrencyCode.CNY;
 
         /// <summary>退款异步通知地址</summary>
         public string NotifyUrl { get; set; }

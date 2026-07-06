@@ -12,7 +12,7 @@ namespace B.Unified.Payment.Alipay.Models
         /// <summary>支付宝交易号（tradeNo），前端 JSSDK 调起支付需使用</summary>
         public string AlipayTradeNo { get; set; }
 
-        public override string BuildPayDataType() => "aliapp";
+        public override PayDataTypeCode BuildPayDataType() => PayDataTypeCode.AliApp;
 
         public override string BuildPayData()
             => string.IsNullOrEmpty(AlipayTradeNo) ? "" : JsonConvert.SerializeObject(new { alipayTradeNo = AlipayTradeNo });

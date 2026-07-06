@@ -55,7 +55,7 @@ namespace B.Unified.Payment.Alipay.PayWay
                     ChannelAttach  = resp.Body
                 };
                 rs.ChannelRetMsg = ret;
-                rs.OrderState = 2;
+                rs.OrderState = PayOrderState.Failed;
                 PayLogger.LogResponse("Alipay", "ALI_QR", new { resp.Code, resp.SubCode, resp.Msg, resp.SubMsg }, ret);
             }
             return rs;

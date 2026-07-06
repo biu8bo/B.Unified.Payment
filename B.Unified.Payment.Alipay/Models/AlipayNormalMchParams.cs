@@ -7,8 +7,8 @@ namespace B.Unified.Payment.Alipay.Models
     /// </summary>
     public class AlipayNormalMchParams : NormalMchParams
     {
-        /// <summary>是否沙箱环境: 0-生产, 1-沙箱</summary>
-        public byte? Sandbox { get; set; }
+        /// <summary>是否沙箱环境</summary>
+        public EnvFlag? Sandbox { get; set; }
 
         /// <summary>支付宝分配给开发者的应用 ID</summary>
         public string AppId { get; set; }
@@ -22,8 +22,8 @@ namespace B.Unified.Payment.Alipay.Models
         /// <summary>签名算法类型（推荐 RSA2）</summary>
         public string SignType { get; set; }
         
-        /// <summary>是否使用证书模式: 0-公钥模式, 1-证书模式</summary>
-        public byte? UseCert { get; set; }
+        /// <summary>密钥模式</summary>
+        public CertMode? UseCert { get; set; }
 
         /// <summary>应用公钥证书内容（证书模式下必填）</summary>
         public string AppPublicCert { get; set; }
@@ -45,6 +45,6 @@ namespace B.Unified.Payment.Alipay.Models
         public static readonly string SandboxServerUrl = "https://openapi-sandbox.dl.alipaydev.com/gateway.do";
 
         /// <summary>根据 Sandbox 标记返回对应网关地址</summary>
-        public string GetServerUrl() => Sandbox == 1 ? SandboxServerUrl : ProdServerUrl;
+        public string GetServerUrl() => Sandbox == EnvFlag.Sandbox ? SandboxServerUrl : ProdServerUrl;
     }
 }

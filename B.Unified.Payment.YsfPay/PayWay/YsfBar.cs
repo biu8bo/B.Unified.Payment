@@ -37,7 +37,7 @@ namespace B.Unified.Payment.YsfPay.PayWay
             if (respCode == "00")
                 rs.ChannelRetMsg = ChannelRetMsg.ConfirmSuccess(resJson["transIndex"]?.ToString());
             else if (respCode == "02" || respCode == "12" || respCode == "99")
-                rs.ChannelRetMsg = new ChannelRetMsg { State = ChannelRetMsg.ChannelState.WAITING, IsNeedQuery = true };
+                rs.ChannelRetMsg = new ChannelRetMsg { State = ChannelState.WAITING, IsNeedQuery = true };
             else
                 rs.ChannelRetMsg = ChannelRetMsg.ConfirmFail(respCode, resJson["respMsg"]?.ToString());
 

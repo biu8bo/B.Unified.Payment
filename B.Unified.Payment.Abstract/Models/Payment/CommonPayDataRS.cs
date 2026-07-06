@@ -17,13 +17,13 @@ namespace B.Unified.Payment.Abstract.Models.Payment
         /// <summary>表单HTML内容</summary>
         public string FormContent { get; set; }
 
-        public override string BuildPayDataType()
+        public override PayDataTypeCode BuildPayDataType()
         {
-            if (!string.IsNullOrEmpty(PayUrl)) return "payurl";
-            if (!string.IsNullOrEmpty(CodeUrl)) return "codeUrl";
-            if (!string.IsNullOrEmpty(CodeImgUrl)) return "codeImgUrl";
-            if (!string.IsNullOrEmpty(FormContent)) return "form";
-            return "payurl";
+            if (!string.IsNullOrEmpty(PayUrl)) return PayDataTypeCode.PayUrl;
+            if (!string.IsNullOrEmpty(CodeUrl)) return PayDataTypeCode.CodeUrl;
+            if (!string.IsNullOrEmpty(CodeImgUrl)) return PayDataTypeCode.CodeImgUrl;
+            if (!string.IsNullOrEmpty(FormContent)) return PayDataTypeCode.Form;
+            return PayDataTypeCode.PayUrl;
         }
 
         public override string BuildPayData()

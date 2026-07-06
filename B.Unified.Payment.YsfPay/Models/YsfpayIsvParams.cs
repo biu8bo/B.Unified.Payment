@@ -8,8 +8,8 @@ namespace B.Unified.Payment.YsfPay.Models
     /// </summary>
     public class YsfpayIsvParams : NormalMchParams
     {
-        /// <summary>是否沙箱环境: 0-生产, 1-沙箱</summary>
-        public byte? Sandbox { get; set; }
+        /// <summary>是否沙箱环境</summary>
+        public EnvFlag? Sandbox { get; set; }
 
         /// <summary>云闪付服务商标识（serProvId）</summary>
         public string SerProvId { get; set; }
@@ -34,6 +34,6 @@ namespace B.Unified.Payment.YsfPay.Models
         public const string SandboxServerUrl = "http://ysf.bcbip.cn:10240";
 
         /// <summary>获取当前环境网关地址</summary>
-        public string GetServerUrl() => Sandbox == 1 ? SandboxServerUrl : ProdServerUrl;
+        public string GetServerUrl() => Sandbox == EnvFlag.Sandbox ? SandboxServerUrl : ProdServerUrl;
     }
 }

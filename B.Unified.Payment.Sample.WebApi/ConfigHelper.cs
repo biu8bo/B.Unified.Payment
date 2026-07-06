@@ -31,7 +31,7 @@ public static class ConfigHelper
                     AppId           = ali["AppId"].ToString(),
                     PrivateKey      = ali["PrivateKey"].ToString(),
                     AlipayPublicKey = ali["AlipayPublicKey"].ToString(),
-                    Sandbox         = (byte)ali["Sandbox"].Value<int>(),
+                    Sandbox         = (EnvFlag)ali["Sandbox"].Value<int>(),
                     SignType        = ali["SignType"].ToString()
                 };
                 break;
@@ -52,7 +52,7 @@ public static class ConfigHelper
                 var ysf = _keys["YsfPay"];
                 ctx.NormalMchParamsMap["ysfpay"] = new YsfpayIsvParams
                 {
-                    Sandbox         = (byte)ysf["Sandbox"].Value<int>(),
+                    Sandbox         = (EnvFlag)ysf["Sandbox"].Value<int>(),
                     SerProvId       = ysf["SerProvId"].ToString(),
                     MerId           = ysf["MerId"].ToString(),
                     PrivateCert     = ysf["PrivateCert"].ToString(),

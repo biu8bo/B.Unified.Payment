@@ -10,7 +10,7 @@ namespace B.Unified.Payment.Weixin.Models
         /// <summary>小程序调起支付参数字符串</summary>
         public string PayInfo { get; set; }
 
-        public override string BuildPayDataType() => "wxapp";
+        public override PayDataTypeCode BuildPayDataType() => PayDataTypeCode.WxApp;
 
         public override string BuildPayData() => PayInfo ?? "";
     }

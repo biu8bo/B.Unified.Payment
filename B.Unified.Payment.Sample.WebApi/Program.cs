@@ -19,7 +19,12 @@ builder.Services.AddYsfPayPayment();
 // 注册工厂 — 自动初始化 PayLogger（无需手动 Configure）
 builder.Services.AddSingleton<IPaymentServiceFactory, PaymentServiceFactory>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new B.Unified.Payment.Sample.WebApi.Json.PayWayCodeJsonConverter());
+        options.JsonSerializerOptions.Converters.Add(new B.Unified.Payment.Sample.WebApi.Json.PayDataTypeCodeJsonConverter());
+    });
 
 var app = builder.Build();
 app.MapControllers();

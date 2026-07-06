@@ -7,6 +7,6 @@ namespace B.Unified.Payment.Alipay.Models
     /// </summary>
     public class AliBarOrderRS : UnifiedOrderRS
     {
-        public override string BuildPayDataType() => "none";
+        public override PayDataTypeCode BuildPayDataType() => PayDataTypeCode.None;
     }
 }

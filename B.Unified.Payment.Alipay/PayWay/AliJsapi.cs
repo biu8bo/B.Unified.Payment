@@ -49,13 +49,13 @@ namespace B.Unified.Payment.Alipay.PayWay
 
             if (resp.IsError)
             {
-                ret.State = ChannelRetMsg.ChannelState.CONFIRM_FAIL;
+                ret.State = ChannelState.CONFIRM_FAIL;
                 ret.ChannelErrCode = resp.SubCode ?? resp.Code;
                 ret.ChannelErrMsg  = resp.SubMsg  ?? resp.Msg;
             }
             else
             {
-                ret.State = ChannelRetMsg.ChannelState.WAITING;
+                ret.State = ChannelState.WAITING;
                 rs.AlipayTradeNo = resp.TradeNo;
             }
             rs.ChannelRetMsg = ret;

@@ -7,7 +7,7 @@ namespace B.Unified.Payment.Alipay.Models
     /// </summary>
     public class AliAppOrderRS : UnifiedOrderRS
     {
-        public override string BuildPayDataType() => "aliapp";
+        public override PayDataTypeCode BuildPayDataType() => PayDataTypeCode.AliApp;
 
         public override string BuildPayData() => PayData ?? "";
     }

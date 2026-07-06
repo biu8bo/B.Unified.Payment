@@ -13,6 +13,6 @@ namespace B.Unified.Payment.Weixin.Models
         /// <summary>微信支付订单号</summary>
         public string TransactionId { get; set; }
 
-        public override string BuildPayDataType() => "none";
+        public override PayDataTypeCode BuildPayDataType() => PayDataTypeCode.None;
     }
 }

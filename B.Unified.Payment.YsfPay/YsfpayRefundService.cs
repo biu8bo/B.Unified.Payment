@@ -34,7 +34,7 @@ namespace B.Unified.Payment.YsfPay
             };
 
             var resJson = YsfHttpUtil.PackageParamAndReq("/gateway/api/pay/refund", reqParams, cfg);
-            if (resJson == null) return new ChannelRetMsg { State = ChannelRetMsg.ChannelState.UNKNOWN };
+            if (resJson == null) return new ChannelRetMsg { State = ChannelState.UNKNOWN };
 
             var respCode = resJson["respCode"]?.ToString();
             if (respCode == "00")
@@ -55,10 +55,10 @@ namespace B.Unified.Payment.YsfPay
             };
 
             var resJson = YsfHttpUtil.PackageParamAndReq("/gateway/api/pay/refundQuery", reqParams, cfg);
-            if (resJson == null) return new ChannelRetMsg { State = ChannelRetMsg.ChannelState.UNKNOWN };
+            if (resJson == null) return new ChannelRetMsg { State = ChannelState.UNKNOWN };
 
             var respCode = resJson["respCode"]?.ToString();
-            if (respCode != "00") return new ChannelRetMsg { State = ChannelRetMsg.ChannelState.UNKNOWN };
+            if (respCode != "00") return new ChannelRetMsg { State = ChannelState.UNKNOWN };
 
             var origRespCode = resJson["origRespCode"]?.ToString();
             return origRespCode switch
@@ -66,7 +66,7 @@ namespace B.Unified.Payment.YsfPay
                 "00" => ChannelRetMsg.ConfirmSuccess(),
                 "01" => ChannelRetMsg.ConfirmFail(respCode, resJson["respMsg"]?.ToString()),
                 "02" => ChannelRetMsg.Waiting(),
-                _    => new ChannelRetMsg { State = ChannelRetMsg.ChannelState.UNKNOWN }
+                _    => new ChannelRetMsg { State = ChannelState.UNKNOWN }
             };
         }
     }

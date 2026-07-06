@@ -56,10 +56,10 @@ namespace B.Unified.Payment.Weixin.PayWay
                 ret.ChannelUserId = resp["openid"]?.ToString();
                 switch (tradeState)
                 {
-                    case "SUCCESS": ret.State = ChannelRetMsg.ChannelState.CONFIRM_SUCCESS; break;
-                    case "USERPAYING": ret.State = ChannelRetMsg.ChannelState.WAITING; ret.IsNeedQuery = true; break;
-                    case "PAYERROR": ret.State = ChannelRetMsg.ChannelState.CONFIRM_FAIL; break;
-                    default: ret.State = ChannelRetMsg.ChannelState.WAITING; ret.IsNeedQuery = true; break;
+                    case "SUCCESS": ret.State = ChannelState.CONFIRM_SUCCESS; break;
+                    case "USERPAYING": ret.State = ChannelState.WAITING; ret.IsNeedQuery = true; break;
+                    case "PAYERROR": ret.State = ChannelState.CONFIRM_FAIL; break;
+                    default: ret.State = ChannelState.WAITING; ret.IsNeedQuery = true; break;
                 }
             }
             else

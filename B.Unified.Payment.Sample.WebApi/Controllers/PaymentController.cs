@@ -1,6 +1,6 @@
 using B.Unified.Payment.Abstract;
-using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.Sample.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace B.Unified.Payment.Sample.WebApi.Controllers;
@@ -21,7 +21,7 @@ public class PaymentController : ControllerBase
         {
             PayOrderId     = $"TEST{DateTime.Now:yyyyMMddHHmmssfff}",
             MchOrderNo     = $"MCH{DateTime.Now:yyyyMMddHHmmss}",
-            WayCode        = PayWayCode.Of(req.WayCode),
+            WayCode        = req.WayCode,
             Amount         = req.Amount,
             Subject        = req.Subject ?? req.WayCode,
             Body           = req.Body ?? req.Subject ?? req.WayCode,
@@ -35,18 +35,4 @@ public class PaymentController : ControllerBase
         var rs = (UnifiedOrderRS)await service.PayAsync(rq, ConfigHelper.Load(req.IfCode));
         return Ok(rs);
     }
-}
-
-public class PayRequest
-{
-    public string IfCode { get; set; } = "alipay";
-    public string WayCode { get; set; } = "ALI_QR";
-    public long Amount { get; set; } = 100;
-    public string? Subject { get; set; }
-    public string? Body { get; set; }
-    public string? NotifyUrl { get; set; }
-    public string? ReturnUrl { get; set; }
-    public string? ChannelUserId { get; set; }
-    public string? AuthCode { get; set; }
-    public string? ClientIp { get; set; }
 }

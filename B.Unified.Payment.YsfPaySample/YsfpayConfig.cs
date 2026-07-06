@@ -23,7 +23,7 @@ public static class YsfpayConfig
         var ctx = new MchAppConfigContext();
         ctx.NormalMchParamsMap[IfCode.YSFPAY] = new YsfpayIsvParams
         {
-            Sandbox         = (byte)(keys["Sandbox"].Value<int>()),
+            Sandbox         = (EnvFlag)keys["Sandbox"].Value<int>(),
             SerProvId       = keys["SerProvId"].ToString(),
             MerId           = keys["MerId"].ToString(),
             PrivateCert     = keys["PrivateCert"].ToString(),

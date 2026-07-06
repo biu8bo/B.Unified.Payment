@@ -25,50 +25,50 @@ namespace B.Unified.Payment.Abstract
                 var err = PreCheck(bizRQ, ctx);
                 if (!string.IsNullOrEmpty(err))
                 {
-                    return new UnifiedOrderRS
+                    return Finalize(new UnifiedOrderRS
                     {
                         PayOrderId = bizRQ?.PayOrderId,
                         MchOrderNo = bizRQ?.MchOrderNo,
                         ErrCode = "PRECHECK_FAIL",
                         ErrMsg = err,
                         ChannelRetMsg = ChannelRetMsg.ConfirmFail("PRECHECK_FAIL", err)
-                    };
+                    });
                 }
 
-                return await ExecutePayAsync(bizRQ, ctx);
+                return Finalize(await ExecutePayAsync(bizRQ, ctx));
             }
             catch (Exceptions.BizException ex)
             {
-                return new UnifiedOrderRS
+                return Finalize(new UnifiedOrderRS
                 {
                     PayOrderId = bizRQ?.PayOrderId,
                     MchOrderNo = bizRQ?.MchOrderNo,
                     ErrCode = "BIZ_ERROR",
                     ErrMsg = ex.Message,
                     ChannelRetMsg = ChannelRetMsg.ConfirmFail("BIZ_ERROR", ex.Message)
-                };
+                });
             }
             catch (Exceptions.ChannelException ex)
             {
-                return new UnifiedOrderRS
+                return Finalize(new UnifiedOrderRS
                 {
                     PayOrderId = bizRQ?.PayOrderId,
                     MchOrderNo = bizRQ?.MchOrderNo,
                     ErrCode = "CHANNEL_ERROR",
                     ErrMsg = ex.Message,
                     ChannelRetMsg = ex.ChannelRetMsg
-                };
+                });
             }
             catch (System.Exception ex)
             {
-                return new UnifiedOrderRS
+                return Finalize(new UnifiedOrderRS
                 {
                     PayOrderId = bizRQ?.PayOrderId,
                     MchOrderNo = bizRQ?.MchOrderNo,
                     ErrCode = "SYS_ERROR",
                     ErrMsg = ex.Message,
                     ChannelRetMsg = ChannelRetMsg.SysError(ex.Message)
-                };
+                });
             }
         }
 
@@ -83,5 +83,12 @@ namespace B.Unified.Payment.Abstract
         protected abstract Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ bizRQ, MchAppConfigContext ctx);
 
         #endregion
+
+        private static AbstractRS Finalize(AbstractRS rs)
+        {
+            if (rs is UnifiedOrderRS orderRs)
+                orderRs.FinalizePayData();
+            return rs;
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace B.Unified.Payment.YsfPay.Models
         /// <summary>调起云闪付插件的 URL</summary>
         public string RedirectUrl { get; set; }
 
-        public override string BuildPayDataType() => "ysfapp";
+        public override PayDataTypeCode BuildPayDataType() => PayDataTypeCode.YsfApp;
 
         public override string BuildPayData()
             => string.IsNullOrEmpty(RedirectUrl) ? "" : Newtonsoft.Json.JsonConvert.SerializeObject(new { redirectUrl = RedirectUrl });
@@ -17,6 +17,6 @@ namespace B.Unified.Payment.YsfPay.Models
     /// <summary>云闪付条码支付响应 — 即时返回结果，无需支付数据</summary>
     public class YsfBarOrderRS : UnifiedOrderRS
     {
-        public override string BuildPayDataType() => "none";
+        public override PayDataTypeCode BuildPayDataType() => PayDataTypeCode.None;
     }
 }

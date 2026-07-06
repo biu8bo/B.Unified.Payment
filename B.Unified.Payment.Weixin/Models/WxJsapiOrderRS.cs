@@ -10,7 +10,7 @@ namespace B.Unified.Payment.Weixin.Models
         /// <summary>JSAPI 调起支付参数字符串（appId/timeStamp/nonceStr/package/paySign）</summary>
         public string PayInfo { get; set; }
 
-        public override string BuildPayDataType() => "wxapp";
+        public override PayDataTypeCode BuildPayDataType() => PayDataTypeCode.WxApp;
 
         public override string BuildPayData() => PayInfo ?? "";
     }
