@@ -297,10 +297,16 @@ curl -X POST http://localhost:5000/api/payment/pay \
 | 分账 | 订单分账接口 |
 | 服务商/子商户 | ISV 服务商模式 |
 | 支付回调验签 | 各渠道回调通知解密验签 |
-| 关单 | 关闭/撤销订单 |
-| 账单下载 | 交易账单 / 资金账单 |
 
-> 需要其他功能请提交 [Issue](https://github.com/your-repo/issues)。
+> 需要其他功能请提交 [Issue](https://github.com/biu8bo/B.Unified.Payment/issues)。
+
+## 💐 特别鸣谢
+
+| 项目 | 说明 |
+|------|------|
+| [Jeepay](https://github.com/jeequan/jeepay) | Java 支付系统，本项目的架构设计参考 |
+| [AlipaySDKNet.Standard](https://www.nuget.org/packages/AlipaySDKNet.Standard) | 支付宝官方 .NET SDK，支付宝模块基于此实现 |
+| [Senparc.Weixin](https://github.com/JeffreySu/WeiXinMPSDK) | 微信 .NET SDK（盛派），微信支付模块基于此实现 |
 
 ## License
 
