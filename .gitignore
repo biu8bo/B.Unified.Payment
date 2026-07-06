@@ -10,3 +10,4 @@ obj/
 # NuGet
 *.nupkg
 packages/
+.idea
