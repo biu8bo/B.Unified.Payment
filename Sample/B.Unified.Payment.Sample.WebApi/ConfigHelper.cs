@@ -6,14 +6,14 @@ using Newtonsoft.Json.Linq;
 
 namespace B.Unified.Payment.Sample.WebApi;
 
-/// <summary>配置加载（示例：从 keys.json 读取，实际项目应替换为数据库、配置中心等）</summary>
+/// <summary>酝置加载（示例：从 keys.json 读坖，实际项目应替杢为数杮库〝酝置中心等）</summary>
 public static class ConfigHelper
 {
     private static readonly JObject _keys;
 
     static ConfigHelper()
     {
-        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".."));
         var path = Path.Combine(root, "keys.json");
         _keys = JObject.Parse(File.ReadAllText(path));
     }

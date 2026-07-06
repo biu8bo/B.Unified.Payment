@@ -1,7 +1,7 @@
-// B.Unified.Payment.YsfPaySample — 入口
+// B.Unified.Payment.Sample.YsfPay — 入口
 // 按需取消注释来测试不同功能
 
-using B.Unified.Payment.YsfPaySample;
+using B.Unified.Payment.Sample.YsfPay;
 
 YsfPayDemo.Run();
 // YsfQueryDemo.Run();

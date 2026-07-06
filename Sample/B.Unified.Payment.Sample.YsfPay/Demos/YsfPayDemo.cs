@@ -3,7 +3,7 @@ using B.Unified.Payment.Abstract.Models.Payment;
 using B.Unified.Payment.YsfPay;
 using B.Unified.Payment.YsfPay.Constants;
 
-namespace B.Unified.Payment.YsfPaySample;
+namespace B.Unified.Payment.Sample.YsfPay;
 
 /// <summary>云闪付支付 Demo — 条码支付 + JSAPI 支付</summary>
 public static class YsfPayDemo

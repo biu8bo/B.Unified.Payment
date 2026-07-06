@@ -3,7 +3,7 @@ using B.Unified.Payment.Weixin.Constants;
 using B.Unified.Payment.Weixin.Models;
 using Newtonsoft.Json.Linq;
 
-namespace B.Unified.Payment.WeixinSample;
+namespace B.Unified.Payment.Sample.Weixin;
 
 /// <summary>微信支付共享配置 — 从解决方案根目录 keys.json 读取秘钥</summary>
 public static class WeixinConfig
@@ -12,7 +12,7 @@ public static class WeixinConfig
 
     private static JObject LoadKeys()
     {
-        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".."));
         var path = Path.Combine(root, "keys.json");
         return JObject.Parse(File.ReadAllText(path));
     }

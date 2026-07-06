@@ -1,19 +1,19 @@
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
-using B.Unified.Payment.Weixin;
+using B.Unified.Payment.Alipay;
 
-namespace B.Unified.Payment.WeixinSample;
+namespace B.Unified.Payment.Sample.Alipay;
 
-/// <summary>微信支付订单查询 Demo</summary>
-public static class WeixinQueryDemo
+/// <summary>支付宝订单查询 Demo</summary>
+public static class AlipayQueryDemo
 {
     public static void Run()
     {
         Console.WriteLine("\n╔══════════════════════════════════════════╗");
-        Console.WriteLine("║   微信查单 Demo                            ║");
+        Console.WriteLine("║   支付宝查单 Demo                          ║");
         Console.WriteLine("╚══════════════════════════════════════════╝");
 
-        IPayOrderQueryService queryService = new WeixinPayOrderQueryService();
+        IPayOrderQueryService queryService = new AlipayPayOrderQueryService();
 
         Console.Write("请输入要查询的商户订单号 (PayOrderId): ");
         var payOrderId = Console.ReadLine()?.Trim();
@@ -25,7 +25,7 @@ public static class WeixinQueryDemo
         }
 
         Console.WriteLine($"\n  正在查询: {payOrderId}");
-        var result = queryService.QueryAsync(payOrderId, WeixinConfig.Context).GetAwaiter().GetResult();
+        var result = queryService.QueryAsync(payOrderId, AlipayConfig.Context).GetAwaiter().GetResult();
 
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  State:          {result.State}");

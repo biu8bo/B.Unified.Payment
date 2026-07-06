@@ -125,12 +125,11 @@ B.Unified.Payment/
 │   ├── Utils/                           #   YsfHttpUtil / YsfpayConfigHelper
 │   └── PayWay/                          #   YsfBar + YsfJsapi（各实现 IPaymentService）
 │
-├── B.Unified.Payment.AlipaySample/      # 支付宝控制台示例
-│   ├── Config/                          #   AlipayConfig
-│   └── Demos/                           #   Pay / Query / Refund Demo
-├── B.Unified.Payment.WeixinSample/      # 微信控制台示例（Config/ + Demos/）
-├── B.Unified.Payment.YsfPaySample/      # 云闪付控制台示例（Config/ + Demos/）
-├── B.Unified.Payment.Sample.WebApi/     # Web API 示例（DI + 控制器）
+├── Sample/                              # 示例项目（统一命名 B.Unified.Payment.Sample.*）
+│   ├── B.Unified.Payment.Sample.Alipay/ #   支付宝控制台示例（Config/ + Demos/）
+│   ├── B.Unified.Payment.Sample.Weixin/ #   微信控制台示例
+│   ├── B.Unified.Payment.Sample.YsfPay/ #   云闪付控制台示例
+│   └── B.Unified.Payment.Sample.WebApi/ #   Web API 示例（DI + 控制器）
 ├── keys.json                            # 秘钥配置（.gitignore 忽略）
 ├── keys.template.json                   # 秘钥模板
 └── .gitignore
@@ -244,10 +243,10 @@ var result = await refundService.RefundAsync(new RefundOrderRQ
 
 ```bash
 # 控制台示例
-cd B.Unified.Payment.AlipaySample && dotnet run
+cd Sample/B.Unified.Payment.Sample.Alipay && dotnet run
 
 # Web API 示例（Swagger 不包含，直接 curl）
-cd B.Unified.Payment.Sample.WebApi && dotnet run
+cd Sample/B.Unified.Payment.Sample.WebApi && dotnet run
 
 curl -X POST http://localhost:5000/api/payment/pay \
   -H "Content-Type: application/json" \

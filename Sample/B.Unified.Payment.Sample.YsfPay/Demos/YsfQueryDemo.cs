@@ -1,7 +1,7 @@
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.YsfPay;
 
-namespace B.Unified.Payment.YsfPaySample;
+namespace B.Unified.Payment.Sample.YsfPay;
 
 /// <summary>云闪付查单 Demo</summary>
 public static class YsfQueryDemo

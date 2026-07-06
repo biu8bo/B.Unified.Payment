@@ -3,7 +3,7 @@ using B.Unified.Payment.YsfPay.Constants;
 using B.Unified.Payment.YsfPay.Models;
 using Newtonsoft.Json.Linq;
 
-namespace B.Unified.Payment.YsfPaySample;
+namespace B.Unified.Payment.Sample.YsfPay;
 
 /// <summary>云闪付共享配置 — 从解决方案根目录 keys.json 读取秘钥</summary>
 public static class YsfpayConfig
@@ -12,7 +12,7 @@ public static class YsfpayConfig
 
     private static JObject LoadKeys()
     {
-        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".."));
         var path = Path.Combine(root, "keys.json");
         return JObject.Parse(File.ReadAllText(path));
     }

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>B.Unified.Payment.Sample.Weixin</RootNamespace>
+    <AssemblyName>B.Unified.Payment.Sample.Weixin</AssemblyName>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\B.Unified.Payment.Abstract\B.Unified.Payment.Abstract.csproj" />
+    <ProjectReference Include="..\..\B.Unified.Payment.Weixin\B.Unified.Payment.Weixin.csproj" />
+  </ItemGroup>
+
+</Project>
