@@ -127,13 +127,6 @@ B.Unified.Payment/
 
 ## 快速开始
 
-### 安装
-
-```bash
-# 按需安装通道包（NuGet 发布后）
-dotnet add package B.Unified.Payment.Alipay
-dotnet add package B.Unified.Payment.Weixin
-```
 
 ### 1. 配置秘钥
 
