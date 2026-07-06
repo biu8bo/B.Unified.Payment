@@ -1,8 +1,9 @@
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Interfaces;
 using B.Unified.Payment.Abstract.Models.Refund;
-using B.Unified.Payment.YsfPay;
+using B.Unified.Payment.Sample.YsfPay.Config;
+using B.Unified.Payment.YsfPay.Services.Refund;
 
-namespace B.Unified.Payment.Sample.YsfPay;
+namespace B.Unified.Payment.Sample.YsfPay.Demos;
 
 /// <summary>云闪付退款 Demo</summary>
 public static class YsfRefundDemo

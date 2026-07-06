@@ -1,8 +1,8 @@
-using B.Unified.Payment.Abstract;
-using B.Unified.Payment.Abstract.Models;
-using B.Unified.Payment.Alipay;
+using B.Unified.Payment.Abstract.Interfaces;
+using B.Unified.Payment.Alipay.Services.Query;
+using B.Unified.Payment.Sample.Alipay.Config;
 
-namespace B.Unified.Payment.Sample.Alipay;
+namespace B.Unified.Payment.Sample.Alipay.Demos;
 
 /// <summary>支付宝订单查询 Demo</summary>
 public static class AlipayQueryDemo

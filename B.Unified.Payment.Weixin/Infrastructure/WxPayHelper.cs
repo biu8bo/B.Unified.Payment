@@ -1,14 +1,13 @@
 using B.Unified.Payment.Abstract.Exceptions;
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Payment;
 using B.Unified.Payment.Weixin.Constants;
-using B.Unified.Payment.Weixin.Models;
+using B.Unified.Payment.Weixin.Models.MchParams;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.TenPayV3.Apis;
 using Senparc.Weixin.TenPayV3.Apis.BasePay;
-using Senparc.Weixin.TenPayV3.Helpers;
 
-namespace B.Unified.Payment.Weixin.PayWay
+namespace B.Unified.Payment.Weixin.Infrastructure
 {
     /// <summary>
     /// 微信支付共享工具 — 使用 Senparc.Weixin.TenPayV3 SDK。

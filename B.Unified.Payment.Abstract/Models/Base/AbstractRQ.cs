@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace B.Unified.Payment.Abstract.Models
+namespace B.Unified.Payment.Abstract.Models.Base
 {
     /// <summary>
     /// 基础请求参数

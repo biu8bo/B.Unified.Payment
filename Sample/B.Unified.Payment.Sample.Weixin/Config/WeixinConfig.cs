@@ -1,9 +1,9 @@
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Weixin.Constants;
-using B.Unified.Payment.Weixin.Models;
+using B.Unified.Payment.Weixin.Models.MchParams;
 using Newtonsoft.Json.Linq;
 
-namespace B.Unified.Payment.Sample.Weixin;
+namespace B.Unified.Payment.Sample.Weixin.Config;
 
 /// <summary>微信支付共享配置 — 从解决方案根目录 keys.json 读取秘钥</summary>
 public static class WeixinConfig

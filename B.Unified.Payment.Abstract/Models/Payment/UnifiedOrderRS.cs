@@ -1,5 +1,7 @@
 using Newtonsoft.Json;
 using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Base;
+using B.Unified.Payment.Abstract.Models.Channel;
 
 namespace B.Unified.Payment.Abstract.Models.Payment
 {

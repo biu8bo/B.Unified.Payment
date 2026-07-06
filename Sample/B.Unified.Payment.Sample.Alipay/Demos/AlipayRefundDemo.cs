@@ -1,8 +1,9 @@
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Interfaces;
 using B.Unified.Payment.Abstract.Models.Refund;
-using B.Unified.Payment.Alipay;
+using B.Unified.Payment.Alipay.Services.Refund;
+using B.Unified.Payment.Sample.Alipay.Config;
 
-namespace B.Unified.Payment.Sample.Alipay;
+namespace B.Unified.Payment.Sample.Alipay.Demos;
 
 /// <summary>支付宝退款 Demo — 发起退款 + 查单</summary>
 public static class AlipayRefundDemo

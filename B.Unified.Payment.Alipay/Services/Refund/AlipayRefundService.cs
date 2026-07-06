@@ -1,12 +1,13 @@
-using Aop.Api.Domain;
 using System.Threading.Tasks;
+using Aop.Api.Domain;
 using Aop.Api.Request;
-using B.Unified.Payment.Abstract;
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Interfaces;
+using B.Unified.Payment.Abstract.Models.Channel;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Refund;
-using B.Unified.Payment.Alipay.PayWay;
+using B.Unified.Payment.Alipay.Infrastructure;
 
-namespace B.Unified.Payment.Alipay
+namespace B.Unified.Payment.Alipay.Services.Refund
 {
     /// <summary>
     /// 支付宝退款服务 — alipay.trade.refund + alipay.trade.fastpay.refund.query。

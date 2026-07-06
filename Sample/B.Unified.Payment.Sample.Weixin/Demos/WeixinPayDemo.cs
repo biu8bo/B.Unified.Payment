@@ -1,9 +1,10 @@
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Factory;
 using B.Unified.Payment.Abstract.Models.Payment;
-using B.Unified.Payment.Weixin;
+using B.Unified.Payment.Sample.Weixin.Config;
 using B.Unified.Payment.Weixin.Constants;
+using B.Unified.Payment.Weixin.Extensions;
 
-namespace B.Unified.Payment.Sample.Weixin;
+namespace B.Unified.Payment.Sample.Weixin.Demos;
 
 /// <summary>微信支付 Demo — 6 种支付方式示例</summary>
 public static class WeixinPayDemo

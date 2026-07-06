@@ -1,6 +1,6 @@
 using B.Unified.Payment.Abstract.Models.Payment;
 
-namespace B.Unified.Payment.Weixin.Models
+namespace B.Unified.Payment.Weixin.Models.Responses
 {
     /// <summary>
     /// WX_BAR 付款码支付响应 — 被扫支付即时返回交易状态

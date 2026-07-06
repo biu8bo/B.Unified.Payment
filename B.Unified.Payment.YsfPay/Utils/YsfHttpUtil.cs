@@ -5,11 +5,11 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using B.Unified.Payment.YsfPay.Models.MchParams;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using B.Unified.Payment.YsfPay.Models;
 
-namespace B.Unified.Payment.YsfPay
+namespace B.Unified.Payment.YsfPay.Utils
 {
     /// <summary>
     /// 云闪付公共工具 — HTTP 请求 + RSA SHA256withRSA 签名

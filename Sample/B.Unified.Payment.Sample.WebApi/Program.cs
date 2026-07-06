@@ -1,7 +1,11 @@
 using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Factory;
 using B.Unified.Payment.Alipay;
+using B.Unified.Payment.Alipay.Extensions;
 using B.Unified.Payment.Weixin;
+using B.Unified.Payment.Weixin.Extensions;
 using B.Unified.Payment.YsfPay;
+using B.Unified.Payment.YsfPay.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,9 +1,9 @@
 using B.Unified.Payment.Abstract.Exceptions;
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.YsfPay.Constants;
-using B.Unified.Payment.YsfPay.Models;
+using B.Unified.Payment.YsfPay.Models.MchParams;
 
-namespace B.Unified.Payment.YsfPay
+namespace B.Unified.Payment.YsfPay.Utils
 {
     /// <summary>云闪付配置获取工具</summary>
     internal static class YsfpayConfigHelper

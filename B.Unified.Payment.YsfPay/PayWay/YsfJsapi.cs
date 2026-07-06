@@ -1,9 +1,14 @@
 using System.Threading.Tasks;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Base;
+using B.Unified.Payment.Abstract.Models.Channel;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Payment;
 using B.Unified.Payment.YsfPay.Constants;
 using B.Unified.Payment.YsfPay.Models;
+using B.Unified.Payment.YsfPay.Models.Responses;
+using B.Unified.Payment.YsfPay.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace B.Unified.Payment.YsfPay.PayWay

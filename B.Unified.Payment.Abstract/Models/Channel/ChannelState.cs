@@ -1,4 +1,4 @@
-namespace B.Unified.Payment.Abstract.Models
+namespace B.Unified.Payment.Abstract.Models.Channel
 {
     /// <summary>
     /// 渠道响应状态 — 各支付渠道统一映射到此枚举

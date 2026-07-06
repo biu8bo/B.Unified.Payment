@@ -1,9 +1,11 @@
-using B.Unified.Payment.Abstract;
 using System.Threading.Tasks;
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Interfaces;
+using B.Unified.Payment.Abstract.Models.Channel;
+using B.Unified.Payment.Abstract.Models.Mch;
+using B.Unified.Payment.YsfPay.Utils;
 using Newtonsoft.Json.Linq;
 
-namespace B.Unified.Payment.YsfPay
+namespace B.Unified.Payment.YsfPay.Services.Query
 {
     /// <summary>云闪付订单查询 — /gateway/api/pay/queryOrder</summary>
     public class YsfpayPayOrderQueryService : IPayOrderQueryService

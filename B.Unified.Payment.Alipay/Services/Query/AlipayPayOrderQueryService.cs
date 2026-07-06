@@ -1,13 +1,12 @@
-using Aop.Api.Domain;
 using System.Threading.Tasks;
+using Aop.Api.Domain;
 using Aop.Api.Request;
-using B.Unified.Payment.Abstract;
-using B.Unified.Payment.Abstract.Diagnostics;
-using B.Unified.Payment.Abstract.Exceptions;
-using B.Unified.Payment.Abstract.Models;
-using B.Unified.Payment.Alipay.PayWay;
+using B.Unified.Payment.Abstract.Interfaces;
+using B.Unified.Payment.Abstract.Models.Channel;
+using B.Unified.Payment.Abstract.Models.Mch;
+using B.Unified.Payment.Alipay.Infrastructure;
 
-namespace B.Unified.Payment.Alipay
+namespace B.Unified.Payment.Alipay.Services.Query
 {
     /// <summary>
     /// 支付宝订单查询 — 调用 alipay.trade.query 查询订单状态。

@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace B.Unified.Payment.Abstract
+namespace B.Unified.Payment.Abstract.Factory
 {
     /// <summary>
     /// 支付服务构建器 — 非 DI 场景下一行注册渠道，支持扩展自定义 PayWay。

@@ -1,6 +1,6 @@
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
 
-namespace B.Unified.Payment.YsfPay.Models
+namespace B.Unified.Payment.YsfPay.Models.MchParams
 {
     /// <summary>
     /// 云闪付商户配置参数。

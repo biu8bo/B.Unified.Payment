@@ -1,8 +1,11 @@
+using B.Unified.Payment.Abstract.Factory;
+using B.Unified.Payment.Abstract.Interfaces;
 using B.Unified.Payment.Alipay.PayWay;
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Alipay.Services.Query;
+using B.Unified.Payment.Alipay.Services.Refund;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace B.Unified.Payment.Alipay
+namespace B.Unified.Payment.Alipay.Extensions
 {
     /// <summary>支付宝模块服务注册（DI 与 Builder 共用）</summary>
     internal static class AlipayPaymentRegistration
@@ -24,16 +27,16 @@ namespace B.Unified.Payment.Alipay
 
         internal static IServiceCollection AddTo(IServiceCollection services)
         {
-            services.AddTransient<Abstract.IPaymentService, AliBar>();
-            services.AddTransient<Abstract.IPaymentService, AliPc>();
-            services.AddTransient<Abstract.IPaymentService, AliWap>();
-            services.AddTransient<Abstract.IPaymentService, AliJsapi>();
-            services.AddTransient<Abstract.IPaymentService, AliApp>();
-            services.AddTransient<Abstract.IPaymentService, AliQr>();
-            services.AddTransient<Abstract.IPaymentService, AliLite>();
-            services.AddTransient<Abstract.IPaymentService, AliOc>();
-            services.AddTransient<Abstract.IPayOrderQueryService, AlipayPayOrderQueryService>();
-            services.AddTransient<Abstract.IRefundService, AlipayRefundService>();
+            services.AddTransient<IPaymentService, AliBar>();
+            services.AddTransient<IPaymentService, AliPc>();
+            services.AddTransient<IPaymentService, AliWap>();
+            services.AddTransient<IPaymentService, AliJsapi>();
+            services.AddTransient<IPaymentService, AliApp>();
+            services.AddTransient<IPaymentService, AliQr>();
+            services.AddTransient<IPaymentService, AliLite>();
+            services.AddTransient<IPaymentService, AliOc>();
+            services.AddTransient<IPayOrderQueryService, AlipayPayOrderQueryService>();
+            services.AddTransient<IRefundService, AlipayRefundService>();
             return services;
         }
     }

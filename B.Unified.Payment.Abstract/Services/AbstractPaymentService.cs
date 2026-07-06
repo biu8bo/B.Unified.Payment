@@ -1,8 +1,11 @@
 using System.Threading.Tasks;
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Interfaces;
+using B.Unified.Payment.Abstract.Models.Base;
+using B.Unified.Payment.Abstract.Models.Channel;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Payment;
 
-namespace B.Unified.Payment.Abstract
+namespace B.Unified.Payment.Abstract.Services
 {
     /// <summary>
     /// 支付服务抽象基类 — 模板方法：ValidateCommon → PreCheckWay → ExecutePayAsync → FinalizePayData。

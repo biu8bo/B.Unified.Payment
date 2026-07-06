@@ -1,6 +1,6 @@
 using B.Unified.Payment.Abstract.Models.Payment;
 
-namespace B.Unified.Payment.YsfPay.Models
+namespace B.Unified.Payment.YsfPay.Models.Responses
 {
     /// <summary>云闪付 JSAPI 支付响应 — 返回 redirectUrl 用于调起云闪付插件</summary>
     public class YsfJsapiOrderRS : UnifiedOrderRS

@@ -4,9 +4,14 @@ using Aop.Api.Request;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Diagnostics;
 using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Base;
+using B.Unified.Payment.Abstract.Models.Channel;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Payment;
 using B.Unified.Payment.Alipay.Constants;
+using B.Unified.Payment.Alipay.Infrastructure;
 using B.Unified.Payment.Alipay.Models;
+using B.Unified.Payment.Alipay.Models.Responses;
 
 namespace B.Unified.Payment.Alipay.PayWay
 {

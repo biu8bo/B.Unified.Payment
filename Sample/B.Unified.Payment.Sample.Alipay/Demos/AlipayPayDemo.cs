@@ -1,9 +1,10 @@
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Factory;
 using B.Unified.Payment.Abstract.Models.Payment;
-using B.Unified.Payment.Alipay;
 using B.Unified.Payment.Alipay.Constants;
+using B.Unified.Payment.Alipay.Extensions;
+using B.Unified.Payment.Sample.Alipay.Config;
 
-namespace B.Unified.Payment.Sample.Alipay;
+namespace B.Unified.Payment.Sample.Alipay.Demos;
 
 /// <summary>支付宝支付 Demo — 8 种支付方式示例</summary>
 public static class AlipayPayDemo

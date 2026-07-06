@@ -1,9 +1,10 @@
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Factory;
 using B.Unified.Payment.Abstract.Models.Payment;
-using B.Unified.Payment.YsfPay;
+using B.Unified.Payment.Sample.YsfPay.Config;
 using B.Unified.Payment.YsfPay.Constants;
+using B.Unified.Payment.YsfPay.Extensions;
 
-namespace B.Unified.Payment.Sample.YsfPay;
+namespace B.Unified.Payment.Sample.YsfPay.Demos;
 
 /// <summary>云闪付支付 Demo — 条码支付 + JSAPI 支付</summary>
 public static class YsfPayDemo

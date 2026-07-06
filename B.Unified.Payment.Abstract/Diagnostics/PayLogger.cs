@@ -1,5 +1,6 @@
 using System;
 using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Channel;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 

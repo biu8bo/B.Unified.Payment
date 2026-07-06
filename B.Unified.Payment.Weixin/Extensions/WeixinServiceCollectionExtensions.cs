@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace B.Unified.Payment.Weixin
+namespace B.Unified.Payment.Weixin.Extensions
 {
     /// <summary>微信支付模块 DI 注册扩展</summary>
     public static class WeixinServiceCollectionExtensions

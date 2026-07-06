@@ -1,6 +1,6 @@
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
 
-namespace B.Unified.Payment.Alipay.Models
+namespace B.Unified.Payment.Alipay.Models.MchParams
 {
     /// <summary>
     /// 支付宝商户配置参数（普通商户）

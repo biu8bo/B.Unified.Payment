@@ -1,7 +1,7 @@
 using B.Unified.Payment.Abstract.Models.Payment;
 using Newtonsoft.Json;
 
-namespace B.Unified.Payment.Alipay.Models
+namespace B.Unified.Payment.Alipay.Models.Responses
 {
     /// <summary>
     /// ALI_JSAPI 生活号/JSAPI支付响应 — 预创建订单，包含支付宝交易号。

@@ -2,6 +2,7 @@
 // 按需取消注释来测试不同功能
 
 using B.Unified.Payment.Sample.Weixin;
+using B.Unified.Payment.Sample.Weixin.Demos;
 
 WeixinPayDemo.Run();
 // WeixinQueryDemo.Run();

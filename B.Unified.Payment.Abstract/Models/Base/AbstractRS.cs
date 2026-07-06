@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace B.Unified.Payment.Abstract.Models
+namespace B.Unified.Payment.Abstract.Models.Base
 {
     /// <summary>
     /// 接口抽象RS对象, 本身无需实例化

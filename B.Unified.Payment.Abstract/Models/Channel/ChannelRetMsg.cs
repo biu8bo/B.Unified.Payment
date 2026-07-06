@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace B.Unified.Payment.Abstract.Models
+namespace B.Unified.Payment.Abstract.Models.Channel
 {
     /// <summary>
     /// 渠道响应信息包装类

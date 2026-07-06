@@ -1,7 +1,11 @@
 using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Alipay.Models;
+using B.Unified.Payment.Alipay.Models.MchParams;
 using B.Unified.Payment.Weixin.Models;
+using B.Unified.Payment.Weixin.Models.MchParams;
 using B.Unified.Payment.YsfPay.Models;
+using B.Unified.Payment.YsfPay.Models.MchParams;
 using Newtonsoft.Json.Linq;
 
 namespace B.Unified.Payment.Sample.WebApi;

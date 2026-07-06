@@ -1,7 +1,9 @@
 using System;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Payment;
+using B.Unified.Payment.Abstract.Services;
 using B.Unified.Payment.Weixin.Constants;
 
 namespace B.Unified.Payment.Weixin.PayWay

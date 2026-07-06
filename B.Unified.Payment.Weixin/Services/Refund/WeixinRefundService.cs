@@ -1,16 +1,14 @@
 using System;
 using System.Threading.Tasks;
-using B.Unified.Payment.Abstract;
-using B.Unified.Payment.Abstract.Exceptions;
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Interfaces;
+using B.Unified.Payment.Abstract.Models.Channel;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Refund;
 using B.Unified.Payment.Weixin.Constants;
-using B.Unified.Payment.Weixin.Models;
-using B.Unified.Payment.Weixin.PayWay;
-using Senparc.Weixin.TenPayV3.Apis;
+using B.Unified.Payment.Weixin.Infrastructure;
 using Senparc.Weixin.TenPayV3.Apis.BasePay;
 
-namespace B.Unified.Payment.Weixin
+namespace B.Unified.Payment.Weixin.Services.Refund
 {
     /// <summary>
     /// 微信支付退款服务 — Senparc SDK。

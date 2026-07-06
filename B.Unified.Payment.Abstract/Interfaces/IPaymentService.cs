@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Base;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Payment;
 
-namespace B.Unified.Payment.Abstract
+namespace B.Unified.Payment.Abstract.Interfaces
 {
     /// <summary>
     /// 统一支付接口 — 所有支付通道必须实现

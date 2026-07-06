@@ -1,9 +1,12 @@
 using System.Threading.Tasks;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Base;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Payment;
 using B.Unified.Payment.Weixin.Constants;
 using B.Unified.Payment.Weixin.Models;
+using B.Unified.Payment.Weixin.Models.Responses;
 
 namespace B.Unified.Payment.Weixin.PayWay
 {

@@ -1,5 +1,6 @@
 using System;
 using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
 using Newtonsoft.Json;
 
 namespace B.Unified.Payment.Abstract.Models.Payment

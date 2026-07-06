@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace B.Unified.Payment.YsfPay
+namespace B.Unified.Payment.YsfPay.Extensions
 {
     /// <summary>云闪付支付模块 DI 注册扩展</summary>
     public static class YsfPayServiceCollectionExtensions

@@ -1,6 +1,6 @@
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
 
-namespace B.Unified.Payment.Weixin.Models
+namespace B.Unified.Payment.Weixin.Models.MchParams
 {
     /// <summary>
     /// 微信支付商户配置参数（普通商户）

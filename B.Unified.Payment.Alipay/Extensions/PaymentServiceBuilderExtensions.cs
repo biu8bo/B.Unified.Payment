@@ -1,6 +1,6 @@
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Factory;
 
-namespace B.Unified.Payment.Alipay
+namespace B.Unified.Payment.Alipay.Extensions
 {
     /// <summary>PaymentServiceBuilder 支付宝扩展</summary>
     public static class PaymentServiceBuilderExtensions

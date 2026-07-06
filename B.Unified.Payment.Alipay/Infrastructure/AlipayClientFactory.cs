@@ -1,9 +1,9 @@
 using Aop.Api;
 using B.Unified.Payment.Abstract.Exceptions;
-using B.Unified.Payment.Abstract.Models;
-using B.Unified.Payment.Alipay.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
+using B.Unified.Payment.Alipay.Models.MchParams;
 
-namespace B.Unified.Payment.Alipay.PayWay
+namespace B.Unified.Payment.Alipay.Infrastructure
 {
     /// <summary>
     /// 支付宝 Client 构建工厂 — 所有 PayWay 共用

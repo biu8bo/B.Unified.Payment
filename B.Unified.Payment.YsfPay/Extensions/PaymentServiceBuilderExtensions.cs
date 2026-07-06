@@ -1,6 +1,6 @@
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Factory;
 
-namespace B.Unified.Payment.YsfPay
+namespace B.Unified.Payment.YsfPay.Extensions
 {
     /// <summary>PaymentServiceBuilder 云闪付扩展</summary>
     public static class PaymentServiceBuilderExtensions

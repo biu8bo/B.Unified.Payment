@@ -1,6 +1,6 @@
 using B.Unified.Payment.Abstract.Models.Payment;
 
-namespace B.Unified.Payment.Alipay.Models
+namespace B.Unified.Payment.Alipay.Models.Responses
 {
     /// <summary>
     /// ALI_OC 订单码支付响应 — 使用 AlipayTradePrecreate + QR_CODE_OFFLINE

@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Channel;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Refund;
 
-namespace B.Unified.Payment.Abstract
+namespace B.Unified.Payment.Abstract.Interfaces
 {
     /// <summary>
     /// 退款接口 — 所有支付通道必须实现。

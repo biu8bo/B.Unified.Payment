@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using B.Unified.Payment.Abstract.Diagnostics;
+using B.Unified.Payment.Abstract.Interfaces;
 using B.Unified.Payment.Abstract.Models;
 using Microsoft.Extensions.Logging;
 
-namespace B.Unified.Payment.Abstract
+namespace B.Unified.Payment.Abstract.Factory
 {
     /// <summary>
     /// 支付服务工厂 — 根据 ifCode + wayCode 获取对应的支付/查单/退款服务。

@@ -1,8 +1,8 @@
-using B.Unified.Payment.Abstract;
-using B.Unified.Payment.Abstract.Models;
-using B.Unified.Payment.Weixin;
+using B.Unified.Payment.Abstract.Interfaces;
+using B.Unified.Payment.Sample.Weixin.Config;
+using B.Unified.Payment.Weixin.Services.Query;
 
-namespace B.Unified.Payment.Sample.Weixin;
+namespace B.Unified.Payment.Sample.Weixin.Demos;
 
 /// <summary>微信支付订单查询 Demo</summary>
 public static class WeixinQueryDemo

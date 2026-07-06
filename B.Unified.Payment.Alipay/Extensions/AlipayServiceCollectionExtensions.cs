@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace B.Unified.Payment.Alipay
+namespace B.Unified.Payment.Alipay.Extensions
 {
     /// <summary>支付宝支付模块 DI 注册扩展</summary>
     public static class AlipayServiceCollectionExtensions

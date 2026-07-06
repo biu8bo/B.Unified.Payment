@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace B.Unified.Payment.Abstract.Models
+namespace B.Unified.Payment.Abstract.Models.Mch
 {
     /// <summary>
     /// 商户应用支付配置上下文 — caller 负责填充后传入 SDK。

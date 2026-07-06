@@ -1,6 +1,6 @@
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Factory;
 
-namespace B.Unified.Payment.Weixin
+namespace B.Unified.Payment.Weixin.Extensions
 {
     /// <summary>PaymentServiceBuilder 微信扩展</summary>
     public static class PaymentServiceBuilderExtensions

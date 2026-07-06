@@ -1,9 +1,9 @@
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Alipay.Constants;
-using B.Unified.Payment.Alipay.Models;
+using B.Unified.Payment.Alipay.Models.MchParams;
 using Newtonsoft.Json.Linq;
 
-namespace B.Unified.Payment.Sample.Alipay;
+namespace B.Unified.Payment.Sample.Alipay.Config;
 
 /// <summary>??????? ? ???????? keys.json ????</summary>
 public static class AlipayConfig

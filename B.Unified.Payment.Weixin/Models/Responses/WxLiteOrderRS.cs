@@ -1,6 +1,6 @@
 using B.Unified.Payment.Abstract.Models.Payment;
 
-namespace B.Unified.Payment.Weixin.Models
+namespace B.Unified.Payment.Weixin.Models.Responses
 {
     /// <summary>
     /// WX_LITE 小程序支付响应 — 返回小程序调起支付参数 JSON（与 JSAPI 相同）

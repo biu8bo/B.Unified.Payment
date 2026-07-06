@@ -1,8 +1,11 @@
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Factory;
+using B.Unified.Payment.Abstract.Interfaces;
 using B.Unified.Payment.Weixin.PayWay;
+using B.Unified.Payment.Weixin.Services.Query;
+using B.Unified.Payment.Weixin.Services.Refund;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace B.Unified.Payment.Weixin
+namespace B.Unified.Payment.Weixin.Extensions
 {
     /// <summary>微信模块服务注册（DI 与 Builder 共用）</summary>
     internal static class WeixinPaymentRegistration
@@ -22,14 +25,14 @@ namespace B.Unified.Payment.Weixin
 
         internal static IServiceCollection AddTo(IServiceCollection services)
         {
-            services.AddTransient<Abstract.IPaymentService, WxJsapi>();
-            services.AddTransient<Abstract.IPaymentService, WxNative>();
-            services.AddTransient<Abstract.IPaymentService, WxH5>();
-            services.AddTransient<Abstract.IPaymentService, WxApp>();
-            services.AddTransient<Abstract.IPaymentService, WxLite>();
-            services.AddTransient<Abstract.IPaymentService, WxBar>();
-            services.AddTransient<Abstract.IPayOrderQueryService, WeixinPayOrderQueryService>();
-            services.AddTransient<Abstract.IRefundService, WeixinRefundService>();
+            services.AddTransient<IPaymentService, WxJsapi>();
+            services.AddTransient<IPaymentService, WxNative>();
+            services.AddTransient<IPaymentService, WxH5>();
+            services.AddTransient<IPaymentService, WxApp>();
+            services.AddTransient<IPaymentService, WxLite>();
+            services.AddTransient<IPaymentService, WxBar>();
+            services.AddTransient<IPayOrderQueryService, WeixinPayOrderQueryService>();
+            services.AddTransient<IRefundService, WeixinRefundService>();
             return services;
         }
     }

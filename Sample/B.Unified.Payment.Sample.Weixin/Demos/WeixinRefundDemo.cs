@@ -1,8 +1,9 @@
-using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Interfaces;
 using B.Unified.Payment.Abstract.Models.Refund;
-using B.Unified.Payment.Weixin;
+using B.Unified.Payment.Sample.Weixin.Config;
+using B.Unified.Payment.Weixin.Services.Refund;
 
-namespace B.Unified.Payment.Sample.Weixin;
+namespace B.Unified.Payment.Sample.Weixin.Demos;
 
 /// <summary>微信退款 Demo — 发起退款 + 查单</summary>
 public static class WeixinRefundDemo

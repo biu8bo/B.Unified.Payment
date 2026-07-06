@@ -1,7 +1,7 @@
-namespace B.Unified.Payment.Abstract.Models
+namespace B.Unified.Payment.Abstract.Models.Mch
 {
     /// <summary>
-    /// 支付宝密钥模式：0-公钥模式, 1-证书模式
+    /// 0-公钥模式, 1-证书模式
     /// </summary>
     public enum CertMode : byte
     {

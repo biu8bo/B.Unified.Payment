@@ -1,10 +1,12 @@
-using B.Unified.Payment.Abstract;
 using System.Threading.Tasks;
-using B.Unified.Payment.Abstract.Models;
+using B.Unified.Payment.Abstract.Interfaces;
+using B.Unified.Payment.Abstract.Models.Channel;
+using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Refund;
+using B.Unified.Payment.YsfPay.Utils;
 using Newtonsoft.Json.Linq;
 
-namespace B.Unified.Payment.YsfPay
+namespace B.Unified.Payment.YsfPay.Services.Refund
 {
     /// <summary>云闪付退款服务 — 发起退款 + 退款查单</summary>
     public class YsfpayRefundService : IRefundService
