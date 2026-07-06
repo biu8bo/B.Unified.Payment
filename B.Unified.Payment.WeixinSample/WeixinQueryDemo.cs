@@ -25,7 +25,7 @@ public static class WeixinQueryDemo
         }
 
         Console.WriteLine($"\n  正在查询: {payOrderId}");
-        var result = queryService.Query(payOrderId, WeixinConfig.Context);
+        var result = queryService.QueryAsync(payOrderId, WeixinConfig.Context).GetAwaiter().GetResult();
 
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  State:          {result.State}");

@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
 using B.Unified.Payment.Weixin;
@@ -12,10 +11,7 @@ public static class WeixinPayDemo
     private static readonly WeixinPaymentService _service = new();
 
     public static void Run()
-    {
-        Trace.Listeners.Add(new ConsoleTraceListener());
-
-        Console.WriteLine("╔══════════════════════════════════════════╗");
+    {        Console.WriteLine("╔══════════════════════════════════════════╗");
         Console.WriteLine("║   微信支付 Demo                            ║");
         Console.WriteLine("╚══════════════════════════════════════════╝");
         Console.WriteLine("  ⚠ 请先在 WeixinConfig.cs 中替换为真实商户参数");
@@ -63,7 +59,7 @@ public static class WeixinPayDemo
         setup?.Invoke(rq);
 
         Console.WriteLine($"  请求: PayOrderId={rq.PayOrderId} Amount={rq.Amount / 100m:F2}元");
-        var rs = (UnifiedOrderRS)_service.Pay(rq, WeixinConfig.Context);
+        var rs = (UnifiedOrderRS)_service.PayAsync(rq, WeixinConfig.Context).GetAwaiter().GetResult();
 
         Console.ForegroundColor = rs.ErrCode == null ? ConsoleColor.Green : ConsoleColor.Red;
         Console.WriteLine($"  响应: ErrCode={rs.ErrCode} State={rs.ChannelRetMsg?.State} PayDataType={rs.PayDataType}");

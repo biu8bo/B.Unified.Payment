@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
@@ -26,8 +27,8 @@ namespace B.Unified.Payment.YsfPay
             return GetHandler(rq.WayCode).PreCheck(rq, ctx);
         }
 
-        protected override AbstractRS ExecutePay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
-            => GetHandler(rq.WayCode).Pay(rq, ctx);
+        protected override async Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+            => await GetHandler(rq.WayCode).PayAsync(rq, ctx);
 
         private IYsfPayWay GetHandler(PayWayCode wc)
         {

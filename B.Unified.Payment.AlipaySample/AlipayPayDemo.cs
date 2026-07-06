@@ -1,9 +1,7 @@
-using System.Diagnostics;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
 using B.Unified.Payment.Alipay;
 using B.Unified.Payment.Alipay.Constants;
-using Newtonsoft.Json;
 
 namespace B.Unified.Payment.AlipaySample;
 
@@ -13,11 +11,7 @@ public static class AlipayPayDemo
     private static readonly AlipayPaymentService _service = new();
 
     public static void Run()
-    {
-        // 启用日志输出
-        Trace.Listeners.Add(new ConsoleTraceListener());
-
-        Console.WriteLine("╔══════════════════════════════════════════╗");
+    {        Console.WriteLine("╔══════════════════════════════════════════╗");
         Console.WriteLine("║   支付宝支付 Demo                          ║");
         Console.WriteLine("╚══════════════════════════════════════════╝");
 
@@ -61,7 +55,7 @@ public static class AlipayPayDemo
         setup?.Invoke(rq);
 
         Console.WriteLine($"  请求: PayOrderId={rq.PayOrderId} Amount={rq.Amount / 100m:F2}元");
-        var rs = (UnifiedOrderRS)_service.Pay(rq, AlipayConfig.Context);
+        var rs = (UnifiedOrderRS)_service.PayAsync(rq, AlipayConfig.Context).GetAwaiter().GetResult();
 
         Console.ForegroundColor = rs.ErrCode == null ? ConsoleColor.Green : ConsoleColor.Red;
         Console.WriteLine($"  响应: ErrCode={rs.ErrCode} State={rs.ChannelRetMsg?.State} PayDataType={rs.PayDataType}");

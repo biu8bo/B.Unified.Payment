@@ -48,7 +48,7 @@ public static class AlipayRefundDemo
         Console.WriteLine($"  退款单号: {refundOrderId}");
         Console.WriteLine($"  退款金额: {refundAmount}分 ({refundAmount / 100m:F2}元)");
 
-        var result = refundService.Refund(rq, AlipayConfig.Context);
+        var result = refundService.RefundAsync(rq, AlipayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  State: {result.State}");
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  ErrCode: {result.ChannelErrCode}");
@@ -56,7 +56,7 @@ public static class AlipayRefundDemo
 
         // 2) 查单
         Console.WriteLine($"\n═══ 退款查单 ═══");
-        var queryResult = refundService.Query(refundOrderId, payOrderId, channelOrderNo, AlipayConfig.Context);
+        var queryResult = refundService.QueryAsync(refundOrderId, payOrderId, channelOrderNo, AlipayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  State: {queryResult.State}");
         Console.WriteLine($"  ErrCode: {queryResult.ChannelErrCode}");
         Console.WriteLine($"  ErrMsg: {queryResult.ChannelErrMsg}");

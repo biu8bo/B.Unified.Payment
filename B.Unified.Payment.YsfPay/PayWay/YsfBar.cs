@@ -1,4 +1,5 @@
 using B.Unified.Payment.Abstract;
+using System.Threading.Tasks;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
 using Newtonsoft.Json.Linq;
@@ -14,7 +15,7 @@ namespace B.Unified.Payment.YsfPay.PayWay
             return null;
         }
 
-        public AbstractRS Pay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var cfg = YsfpayConfigHelper.GetConfig(ctx);
             var orderType = YsfHttpUtil.GetPayOrderType("YSF_BAR");

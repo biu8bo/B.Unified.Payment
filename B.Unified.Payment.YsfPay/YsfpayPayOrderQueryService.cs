@@ -1,4 +1,5 @@
 using B.Unified.Payment.Abstract;
+using System.Threading.Tasks;
 using B.Unified.Payment.Abstract.Models;
 using Newtonsoft.Json.Linq;
 
@@ -9,7 +10,7 @@ namespace B.Unified.Payment.YsfPay
     {
         public string GetIfCode() => Constants.IfCode.YSFPAY;
 
-        public ChannelRetMsg Query(string payOrderId, MchAppConfigContext ctx)
+        public async Task<ChannelRetMsg> QueryAsync(string payOrderId, MchAppConfigContext ctx)
         {
             var cfg = YsfpayConfigHelper.GetConfig(ctx);
 

@@ -40,16 +40,4 @@ namespace B.Unified.Payment.Weixin.Models
         /// <summary>微信支付公钥证书（验签使用）</summary>
         public string WxpayPublicKey { get; set; }
     }
-
-    /// <summary>
-    /// 微信支付特约商户（子商户）参数 — 服务商模式下使用
-    /// </summary>
-    public class WxpayIsvsubMchParams : IsvsubMchParams
-    {
-        /// <summary>子商户号</summary>
-        public string SubMchId { get; set; }
-
-        /// <summary>子商户 AppId</summary>
-        public string SubMchAppId { get; set; }
-    }
 }

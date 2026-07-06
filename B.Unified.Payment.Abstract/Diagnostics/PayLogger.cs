@@ -1,46 +1,54 @@
 using System;
-using System.Diagnostics;
 using B.Unified.Payment.Abstract.Models;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace B.Unified.Payment.Abstract.Diagnostics
 {
     /// <summary>
-    /// SDK 内部日志 — 通过 System.Diagnostics.Trace 输出请求/响应摘要。
-    /// <para>启用方法：在 app 启动时添加 Trace.Listeners.Add(new ConsoleTraceListener());</para>
+    /// SDK 内部日志 — 基于 Microsoft.Extensions.Logging。
+    /// <para>DI 模式下自动初始化（通过 PaymentServiceFactory 注入 ILoggerFactory）。</para>
+    /// <para>非 DI 模式（直接 new）静默跳过，不输出日志。</para>
     /// </summary>
     public static class PayLogger
     {
-        private const string Prefix = "[B.Unified.Payment]";
+        private static ILogger? _logger;
+        private static readonly object _lock = new object();
 
-        /// <summary>记录支付请求参数</summary>
-        public static void LogRequest(string channel, string wayCode, string api, object body)
+        /// <summary>由 DI 自动调用，用户无需关心</summary>
+        internal static void Initialize(ILoggerFactory factory)
         {
-            var json = JsonConvert.SerializeObject(body, new JsonSerializerSettings
+            if (_logger == null)
             {
-                NullValueHandling = NullValueHandling.Ignore,
-                Formatting = Formatting.Indented
-            });
-            Trace.WriteLine($"{Prefix} [{channel}] >>> {wayCode} | {api}");
-            Trace.WriteLine($"{Prefix} [{channel}] >>> REQ:\n{json}");
-        }
-
-        /// <summary>记录支付响应数据</summary>
-        public static void LogResponse(string channel, string wayCode, object response, ChannelRetMsg ret)
-        {
-            var respJson = JsonConvert.SerializeObject(response, Formatting.Indented);
-            Trace.WriteLine($"{Prefix} [{channel}] <<< {wayCode}");
-            Trace.WriteLine($"{Prefix} [{channel}] <<< RESP:\n{respJson}");
-            if (ret != null)
-            {
-                Trace.WriteLine($"{Prefix} [{channel}] <<< CHANNEL: state={ret.State} orderId={ret.ChannelOrderId} userId={ret.ChannelUserId} err={ret.ChannelErrCode}/{ret.ChannelErrMsg}");
+                lock (_lock)
+                {
+                    _logger ??= factory.CreateLogger("B.Unified.Payment");
+                }
             }
         }
 
-        /// <summary>记录异常</summary>
+        public static void LogRequest(string channel, string wayCode, string api, object body)
+        {
+            if (_logger == null) return;
+            var json = JsonConvert.SerializeObject(body, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            _logger.LogInformation("[{Channel}] >>> {WayCode} | {Api}\n{Body}", channel, wayCode, api, json);
+        }
+
+        public static void LogResponse(string channel, string wayCode, object response, ChannelRetMsg ret)
+        {
+            if (_logger == null) return;
+            var respJson = JsonConvert.SerializeObject(response);
+            _logger.LogInformation("[{Channel}] <<< {WayCode}\n{Resp}", channel, wayCode, respJson);
+            if (ret != null)
+            {
+                _logger.LogInformation("[{Channel}] <<< CHANNEL: state={State} orderId={OrderId} err={ErrCode}/{ErrMsg}",
+                    channel, ret.State, ret.ChannelOrderId, ret.ChannelErrCode, ret.ChannelErrMsg);
+            }
+        }
+
         public static void LogError(string channel, string wayCode, Exception ex)
         {
-            Trace.WriteLine($"{Prefix} [{channel}] !!! {wayCode} ERROR: {ex.Message}");
+            _logger?.LogError(ex, "[{Channel}] !!! {WayCode} ERROR", channel, wayCode);
         }
     }
 }

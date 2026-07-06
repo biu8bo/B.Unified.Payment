@@ -1,46 +1,42 @@
 using B.Unified.Payment.Abstract;
+using System.Threading.Tasks;
 using B.Unified.Payment.Abstract.Diagnostics;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
+using Newtonsoft.Json;
+using Senparc.Weixin.TenPayV3.Apis;
+using Senparc.Weixin.TenPayV3.Apis.BasePay;
 
 namespace B.Unified.Payment.Weixin.PayWay
 {
-    /// <summary>微信 Native 扫码支付 — POST /v3/pay/transactions/native</summary>
+    /// <summary>微信 Native 扫码支付 — POST /v3/pay/transactions/native（Senparc SDK）</summary>
     public class WxNative : IWxPayWay
     {
         public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx) => null;
 
-        public AbstractRS Pay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var cfg = WxPayHelper.GetConfig(ctx);
-            var body = new
-            {
-                appid = cfg.AppId, mchid = cfg.MchId, description = rq.Body,
-                out_trade_no = rq.PayOrderId, time_expire = rq.ExpiredTime?.ToString("yyyy-MM-ddTHH:mm:sszzz"),
-                notify_url = rq.NotifyUrl, amount = new { total = rq.GetAmountFen(), currency = rq.Currency ?? "CNY" },
-                settle_info = Division(rq)
-            };
+            var reqData = WxPayHelper.BuildReqData(rq, cfg);
 
-            PayLogger.LogRequest("Weixin", "WX_NATIVE", "/v3/pay/transactions/native", body);
+            PayLogger.LogRequest("Weixin", "WX_NATIVE", "/v3/pay/transactions/native", reqData);
 
-            var resp = WxPayHelper.PostJson(cfg, "/v3/pay/transactions/native", body);
+            var result = await WxPayHelper.BuildApi(cfg).NativeAsync(reqData);
             var rs = new Models.WxNativeOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
-            rs.ChannelOriginResponse = WxPayHelper.ToJsonString(resp);
+            rs.ChannelOriginResponse = JsonConvert.SerializeObject(result);
 
-            if (resp["code_url"] != null)
+            if (result.VerifySignSuccess == true && !string.IsNullOrEmpty(result.code_url))
             {
-                rs.CodeUrl = resp["code_url"].ToString();
+                rs.CodeUrl = result.code_url;
                 rs.ChannelRetMsg = ChannelRetMsg.Waiting();
             }
             else
             {
-                rs.ChannelRetMsg = ChannelRetMsg.ConfirmFail(resp["code"]?.ToString(), resp["message"]?.ToString());
+                var rc = result.ResultCode;
+                rs.ChannelRetMsg = ChannelRetMsg.ConfirmFail(rc?.ErrorCode, rc?.ErrorMessage);
             }
-            PayLogger.LogResponse("Weixin", "WX_NATIVE", resp, rs.ChannelRetMsg);
+            PayLogger.LogResponse("Weixin", "WX_NATIVE", result, rs.ChannelRetMsg);
             return rs;
         }
-
-        private static object Division(UnifiedOrderRQ rq) =>
-            (rq.DivisionMode == 1 || rq.DivisionMode == 2) ? new { profit_sharing = true } : null;
     }
 }

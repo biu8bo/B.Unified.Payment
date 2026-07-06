@@ -3,6 +3,7 @@
     <Project Path="B.Unified.Payment.AlipaySample/B.Unified.Payment.AlipaySample.csproj" />
     <Project Path="B.Unified.Payment.WeixinSample/B.Unified.Payment.WeixinSample.csproj" />
     <Project Path="B.Unified.Payment.YsfPaySample/B.Unified.Payment.YsfPaySample.csproj" />
+    <Project Path="B.Unified.Payment.Sample.WebApi/B.Unified.Payment.Sample.WebApi.csproj" />
   </Folder>
   <Project Path="B.Unified.Payment.Abstract/B.Unified.Payment.Abstract.csproj" />
   <Project Path="B.Unified.Payment.Alipay/B.Unified.Payment.Alipay.csproj" />

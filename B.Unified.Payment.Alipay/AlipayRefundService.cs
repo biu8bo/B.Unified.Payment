@@ -1,4 +1,5 @@
 using Aop.Api.Domain;
+using System.Threading.Tasks;
 using Aop.Api.Request;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
@@ -25,7 +26,7 @@ namespace B.Unified.Payment.Alipay
             return null;
         }
 
-        public ChannelRetMsg Refund(RefundOrderRQ bizRQ, MchAppConfigContext ctx)
+        public async Task<ChannelRetMsg> RefundAsync(RefundOrderRQ bizRQ, MchAppConfigContext ctx)
         {
             try
             {
@@ -55,7 +56,7 @@ namespace B.Unified.Payment.Alipay
             }
         }
 
-        public ChannelRetMsg Query(string refundOrderId, string payOrderId, string channelOrderNo, MchAppConfigContext ctx)
+        public async Task<ChannelRetMsg> QueryAsync(string refundOrderId, string payOrderId, string channelOrderNo, MchAppConfigContext ctx)
         {
             var client = AlipayClientFactory.Build(ctx);
 

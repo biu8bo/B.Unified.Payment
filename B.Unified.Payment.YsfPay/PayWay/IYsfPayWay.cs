@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
@@ -8,6 +9,6 @@ namespace B.Unified.Payment.YsfPay.PayWay
     internal interface IYsfPayWay
     {
         string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx);
-        AbstractRS Pay(UnifiedOrderRQ rq, MchAppConfigContext ctx);
+        Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx);
     }
 }

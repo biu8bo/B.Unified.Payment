@@ -1,4 +1,5 @@
 using B.Unified.Payment.Abstract;
+using System.Threading.Tasks;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
 using B.Unified.Payment.Weixin.Models;
@@ -19,9 +20,9 @@ namespace B.Unified.Payment.Weixin.PayWay
             => _jsapi.PreCheck(rq, ctx);
 
         /// <summary>执行小程序支付 — 复用 JSAPI 支付逻辑</summary>
-        public AbstractRS Pay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
-            var result = _jsapi.Pay(rq, ctx);
+            var result = await _jsapi.PayAsync(rq, ctx);
             // 如果有 prepay_id 返回，包装为 WxLiteOrderRS
             if (result is WxJsapiOrderRS jsapiRs && jsapiRs.PayInfo != null)
             {

@@ -9,31 +9,31 @@ namespace B.Unified.Payment.Abstract.Models.Payment
     /// </summary>
     public class UnifiedOrderRQ
     {
-        #region 商户信息
-
-        /// <summary>商户号</summary>
-        public string MchNo { get; set; }
-
-        /// <summary>商户应用ID</summary>
-        public string AppId { get; set; }
-
-        #endregion
-
-        #region 签名/版本（可选，caller 自行管理签名）
-
-        /// <summary>接口版本号</summary>
-        public string Version { get; set; }
-
-        /// <summary>签名类型</summary>
-        public string SignType { get; set; }
-
-        /// <summary>签名值</summary>
-        public string Sign { get; set; }
-
-        /// <summary>请求时间</summary>
-        public string ReqTime { get; set; }
-
-        #endregion
+        // #region 商户信息
+        //
+        // /// <summary>商户号</summary>
+        // public string MchNo { get; set; }
+        //
+        // /// <summary>商户应用ID</summary>
+        // public string AppId { get; set; }
+        //
+        // #endregion
+        //
+        // #region 签名/版本（可选，caller 自行管理签名）
+        //
+        // /// <summary>接口版本号</summary>
+        // public string Version { get; set; }
+        //
+        // /// <summary>签名类型</summary>
+        // public string SignType { get; set; }
+        //
+        // /// <summary>签名值</summary>
+        // public string Sign { get; set; }
+        //
+        // /// <summary>请求时间</summary>
+        // public string ReqTime { get; set; }
+        //
+        // #endregion
 
         #region 核心参数
 
@@ -89,22 +89,12 @@ namespace B.Unified.Payment.Abstract.Models.Payment
         /// <summary>渠道用户标识（微信 openid / 支付宝 buyerUserId）</summary>
         public string ChannelUserId { get; set; }
 
-        /// <summary>是否子商户 openid: 0-否, 1-是</summary>
-        public byte? SubOpenIdFlag { get; set; }
-
         #endregion
 
         #region 被扫支付
 
         /// <summary>用户支付条码 / 授权码（条码支付）</summary>
         public string AuthCode { get; set; }
-
-        #endregion
-
-        #region 分账
-
-        /// <summary>分账模式: 0-不允许分账, 1-自动分账, 2-手动分账</summary>
-        public byte? DivisionMode { get; set; }
 
         #endregion
 

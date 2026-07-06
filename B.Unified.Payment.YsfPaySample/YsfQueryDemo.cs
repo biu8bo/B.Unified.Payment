@@ -18,7 +18,7 @@ public static class YsfQueryDemo
         var payOrderId = Console.ReadLine()?.Trim();
         if (string.IsNullOrEmpty(payOrderId)) { Console.WriteLine("  跳过"); return; }
 
-        var result = queryService.Query(payOrderId, YsfpayConfig.Context);
+        var result = queryService.QueryAsync(payOrderId, YsfpayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  State: {result.State}");
         Console.WriteLine($"  ErrCode: {result.ChannelErrCode}");

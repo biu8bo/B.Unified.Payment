@@ -1,11 +1,12 @@
+using System.Threading.Tasks;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
 
 namespace B.Unified.Payment.Abstract
 {
     /// <summary>
-    /// 支付服务抽象基类 — 模板方法模式：Pay() 先执行 PreCheck() 再执行 ExecutePay()。
-    /// <para>子类只需实现 GetIfCode / IsSupport / ExecutePay，按需覆写 PreCheck。</para>
+    /// 支付服务抽象基类 — 模板方法模式：PayAsync() 先执行 PreCheck() 再执行 ExecutePayAsync()。
+    /// <para>子类只需实现 GetIfCode / IsSupport / ExecutePayAsync，按需覆写 PreCheck。</para>
     /// </summary>
     public abstract class AbstractPaymentService : IPaymentService
     {
@@ -17,7 +18,7 @@ namespace B.Unified.Payment.Abstract
         /// <summary>
         /// 模板方法 — 先校验再支付
         /// </summary>
-        public virtual AbstractRS Pay(UnifiedOrderRQ bizRQ, MchAppConfigContext ctx)
+        public virtual async Task<AbstractRS> PayAsync(UnifiedOrderRQ bizRQ, MchAppConfigContext ctx)
         {
             try
             {
@@ -34,7 +35,7 @@ namespace B.Unified.Payment.Abstract
                     };
                 }
 
-                return ExecutePay(bizRQ, ctx);
+                return await ExecutePayAsync(bizRQ, ctx);
             }
             catch (Exceptions.BizException ex)
             {
@@ -79,22 +80,7 @@ namespace B.Unified.Payment.Abstract
         protected virtual string PreCheck(UnifiedOrderRQ bizRQ, MchAppConfigContext ctx) => null;
 
         /// <summary>执行支付（子类必须实现）</summary>
-        protected abstract AbstractRS ExecutePay(UnifiedOrderRQ bizRQ, MchAppConfigContext ctx);
-
-        #endregion
-
-        #region 公用工具
-
-        /// <summary>判断是否需要分账</summary>
-        protected virtual bool IsDivisionOrder(UnifiedOrderRQ bizRQ)
-        {
-            if (bizRQ?.DivisionMode != null)
-            {
-                var mode = bizRQ.DivisionMode.Value;
-                return mode == 1 || mode == 2;
-            }
-            return false;
-        }
+        protected abstract Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ bizRQ, MchAppConfigContext ctx);
 
         #endregion
     }

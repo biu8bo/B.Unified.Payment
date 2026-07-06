@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
 
@@ -14,7 +15,7 @@ namespace B.Unified.Payment.Abstract
         /// <summary>是否支持该支付方式（如 WX_JSAPI / ALI_BAR）</summary>
         bool IsSupport(string wayCode);
 
-        /// <summary>执行支付</summary>
-        AbstractRS Pay(UnifiedOrderRQ bizRQ, MchAppConfigContext mchAppConfigContext);
+        /// <summary>执行支付（异步）</summary>
+        Task<AbstractRS> PayAsync(UnifiedOrderRQ bizRQ, MchAppConfigContext mchAppConfigContext);
     }
 }

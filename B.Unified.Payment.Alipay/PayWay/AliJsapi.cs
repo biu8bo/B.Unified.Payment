@@ -1,4 +1,5 @@
 using Aop.Api.Domain;
+using System.Threading.Tasks;
 using Aop.Api.Request;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Models;
@@ -22,7 +23,7 @@ namespace B.Unified.Payment.Alipay.PayWay
         }
 
         /// <summary>执行生活号支付 — 调用 alipay.trade.create 预创建订单</summary>
-        public AbstractRS Pay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var client = AlipayClientFactory.Build(ctx);
 

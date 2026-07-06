@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\B.Unified.Payment.Abstract\B.Unified.Payment.Abstract.csproj" />
+    <ProjectReference Include="..\B.Unified.Payment.Alipay\B.Unified.Payment.Alipay.csproj" />
+    <ProjectReference Include="..\B.Unified.Payment.Weixin\B.Unified.Payment.Weixin.csproj" />
+    <ProjectReference Include="..\B.Unified.Payment.YsfPay\B.Unified.Payment.YsfPay.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -33,7 +33,7 @@ public static class YsfPayDemo
         };
 
         Console.WriteLine($"  请求: PayOrderId={jsapiRq.PayOrderId} Amount={jsapiRq.Amount / 100m:F2}元");
-        var jsapiRs = (UnifiedOrderRS)service.Pay(jsapiRq, YsfpayConfig.Context);
+        var jsapiRs = (UnifiedOrderRS)service.PayAsync(jsapiRq, YsfpayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  响应: ErrCode={jsapiRs.ErrCode} State={jsapiRs.ChannelRetMsg?.State}");
         Console.WriteLine($"  PayDataType={jsapiRs.PayDataType} PayData={jsapiRs.PayData?.Truncate(100)}");
 
@@ -53,7 +53,7 @@ public static class YsfPayDemo
         };
 
         Console.WriteLine($"  请求: PayOrderId={barRq.PayOrderId} Amount={barRq.Amount / 100m:F2}元");
-        var barRs = (UnifiedOrderRS)service.Pay(barRq, YsfpayConfig.Context);
+        var barRs = (UnifiedOrderRS)service.PayAsync(barRq, YsfpayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  响应: ErrCode={barRs.ErrCode} State={barRs.ChannelRetMsg?.State}");
         Console.WriteLine($"  IsNeedQuery={barRs.ChannelRetMsg?.IsNeedQuery}");
 

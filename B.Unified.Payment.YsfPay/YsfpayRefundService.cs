@@ -1,4 +1,5 @@
 using B.Unified.Payment.Abstract;
+using System.Threading.Tasks;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Refund;
 using Newtonsoft.Json.Linq;
@@ -19,7 +20,7 @@ namespace B.Unified.Payment.YsfPay
             return null;
         }
 
-        public ChannelRetMsg Refund(RefundOrderRQ bizRQ, MchAppConfigContext ctx)
+        public async Task<ChannelRetMsg> RefundAsync(RefundOrderRQ bizRQ, MchAppConfigContext ctx)
         {
             var cfg = YsfpayConfigHelper.GetConfig(ctx);
 
@@ -42,7 +43,7 @@ namespace B.Unified.Payment.YsfPay
             return ChannelRetMsg.ConfirmFail(respCode, resJson["respMsg"]?.ToString());
         }
 
-        public ChannelRetMsg Query(string refundOrderId, string payOrderId, string channelOrderNo, MchAppConfigContext ctx)
+        public async Task<ChannelRetMsg> QueryAsync(string refundOrderId, string payOrderId, string channelOrderNo, MchAppConfigContext ctx)
         {
             var cfg = YsfpayConfigHelper.GetConfig(ctx);
 

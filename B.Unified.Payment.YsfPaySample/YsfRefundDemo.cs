@@ -37,14 +37,14 @@ public static class YsfRefundDemo
 
         // 发起退款
         Console.WriteLine($"\n═══ 发起退款 ═══");
-        var result = refundService.Refund(rq, YsfpayConfig.Context);
+        var result = refundService.RefundAsync(rq, YsfpayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  State: {result.State}");
         Console.WriteLine($"  ErrCode: {result.ChannelErrCode}");
         Console.WriteLine($"  ErrMsg: {result.ChannelErrMsg}");
 
         // 查单
         Console.WriteLine($"\n═══ 退款查单 ═══");
-        var queryResult = refundService.Query(refundOrderId, payOrderId, null, YsfpayConfig.Context);
+        var queryResult = refundService.QueryAsync(refundOrderId, payOrderId, null, YsfpayConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  State: {queryResult.State}");
         Console.WriteLine($"  ErrCode: {queryResult.ChannelErrCode}");
     }

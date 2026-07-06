@@ -49,7 +49,7 @@ public static class WeixinRefundDemo
         Console.WriteLine($"  退款单号: {refundOrderId}");
         Console.WriteLine($"  原金额: {payAmount}分  退款: {refundAmount}分");
 
-        var result = refundService.Refund(rq, WeixinConfig.Context);
+        var result = refundService.RefundAsync(rq, WeixinConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  State: {result.State}");
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  ErrCode: {result.ChannelErrCode}");
@@ -57,7 +57,7 @@ public static class WeixinRefundDemo
 
         // 2) 查单
         Console.WriteLine($"\n═══ 退款查单 ═══");
-        var queryResult = refundService.Query(refundOrderId, payOrderId, null, WeixinConfig.Context);
+        var queryResult = refundService.QueryAsync(refundOrderId, payOrderId, null, WeixinConfig.Context).GetAwaiter().GetResult();
         Console.WriteLine($"  State: {queryResult.State}");
         Console.WriteLine($"  ErrCode: {queryResult.ChannelErrCode}");
         Console.WriteLine($"  ErrMsg: {queryResult.ChannelErrMsg}");

@@ -1,4 +1,5 @@
 using Aop.Api.Domain;
+using System.Threading.Tasks;
 using Aop.Api.Request;
 using B.Unified.Payment.Abstract;
 using B.Unified.Payment.Abstract.Diagnostics;
@@ -12,7 +13,7 @@ namespace B.Unified.Payment.Alipay.PayWay
     {
         public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx) => null;
 
-        public AbstractRS Pay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var client = AlipayClientFactory.Build(ctx);
             var model = new AlipayTradePagePayModel

@@ -1,12 +1,17 @@
 using B.Unified.Payment.Abstract;
+using System.Threading.Tasks;
 using B.Unified.Payment.Abstract.Diagnostics;
 using B.Unified.Payment.Abstract.Models;
 using B.Unified.Payment.Abstract.Models.Payment;
 using B.Unified.Payment.Weixin.Models;
+using Newtonsoft.Json;
+using Senparc.Weixin.TenPayV3.Apis;
+using Senparc.Weixin.TenPayV3.Apis.BasePay;
+using Senparc.Weixin.TenPayV3.Helpers;
 
 namespace B.Unified.Payment.Weixin.PayWay
 {
-    /// <summary>微信 JSAPI 支付 — POST /v3/pay/transactions/jsapi</summary>
+    /// <summary>微信 JSAPI 支付 — POST /v3/pay/transactions/jsapi（Senparc SDK）</summary>
     public class WxJsapi : IWxPayWay
     {
         public string PreCheck(UnifiedOrderRQ rq, MchAppConfigContext ctx)
@@ -15,39 +20,31 @@ namespace B.Unified.Payment.Weixin.PayWay
             return null;
         }
 
-        public AbstractRS Pay(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        public async Task<AbstractRS> PayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var cfg = WxPayHelper.GetConfig(ctx);
-            var body = new
-            {
-                appid = cfg.AppId, mchid = cfg.MchId, description = rq.Body,
-                out_trade_no = rq.PayOrderId, time_expire = rq.ExpiredTime?.ToString("yyyy-MM-ddTHH:mm:sszzz"),
-                notify_url = rq.NotifyUrl, amount = new { total = rq.GetAmountFen(), currency = rq.Currency ?? "CNY" },
-                payer = new { openid = rq.ChannelUserId },
-                scene_info = string.IsNullOrEmpty(rq.ClientIp) ? null : new { payer_client_ip = rq.ClientIp },
-                settle_info = Division(rq)
-            };
+            var reqData = WxPayHelper.BuildReqData(rq, cfg);
+            reqData.payer = new TransactionsRequestData.Payer(openid: rq.ChannelUserId);
 
-            PayLogger.LogRequest("Weixin", "WX_JSAPI", "/v3/pay/transactions/jsapi", body);
+            PayLogger.LogRequest("Weixin", "WX_JSAPI", "/v3/pay/transactions/jsapi", reqData);
 
-            var resp = WxPayHelper.PostJson(cfg, "/v3/pay/transactions/jsapi", body);
+            var result = await WxPayHelper.BuildApi(cfg).JsApiAsync(reqData);
             var rs = new WxJsapiOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
-            rs.ChannelOriginResponse = WxPayHelper.ToJsonString(resp);
+            rs.ChannelOriginResponse = JsonConvert.SerializeObject(result);
 
-            if (resp["prepay_id"] != null)
+            if (result.VerifySignSuccess == true && !string.IsNullOrEmpty(result.prepay_id))
             {
-                rs.PayInfo = WxPayHelper.GenJsApiSign(cfg, resp["prepay_id"].ToString());
+                var pkg = TenPaySignHelper.GetJsApiUiPackage(cfg.AppId, result.prepay_id, WxPayHelper.BuildSetting(cfg));
+                rs.PayInfo = JsonConvert.SerializeObject(pkg);
                 rs.ChannelRetMsg = ChannelRetMsg.Waiting();
             }
             else
             {
-                rs.ChannelRetMsg = ChannelRetMsg.ConfirmFail(resp["code"]?.ToString(), resp["message"]?.ToString());
+                var rc = result.ResultCode;
+                rs.ChannelRetMsg = ChannelRetMsg.ConfirmFail(rc?.ErrorCode, rc?.ErrorMessage);
             }
-            PayLogger.LogResponse("Weixin", "WX_JSAPI", resp, rs.ChannelRetMsg);
+            PayLogger.LogResponse("Weixin", "WX_JSAPI", result, rs.ChannelRetMsg);
             return rs;
         }
-
-        private static object Division(UnifiedOrderRQ rq) =>
-            (rq.DivisionMode == 1 || rq.DivisionMode == 2) ? new { profit_sharing = true } : null;
     }
 }

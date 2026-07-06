@@ -3,8 +3,8 @@ using B.Unified.Payment.Abstract.Models;
 namespace B.Unified.Payment.YsfPay.Models
 {
     /// <summary>
-    /// 云闪付商户配置参数（服务商模式）
-    /// <para>云闪付采用 ISV(服务商) + 子商户 两级配置，此处为服务商级别参数。</para>
+    /// 云闪付商户配置参数。
+    /// <para>云闪付接口要求服务商标识 (serProvId) 和商户编号 (merId)，此处统一管理。</para>
     /// </summary>
     public class YsfpayIsvParams : NormalMchParams
     {

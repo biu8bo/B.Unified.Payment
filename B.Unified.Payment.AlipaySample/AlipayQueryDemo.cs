@@ -25,7 +25,7 @@ public static class AlipayQueryDemo
         }
 
         Console.WriteLine($"\n  正在查询: {payOrderId}");
-        var result = queryService.Query(payOrderId, AlipayConfig.Context);
+        var result = queryService.QueryAsync(payOrderId, AlipayConfig.Context).GetAwaiter().GetResult();
 
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  State:          {result.State}");
