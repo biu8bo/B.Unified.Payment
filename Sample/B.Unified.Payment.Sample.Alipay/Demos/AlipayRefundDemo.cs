@@ -8,7 +8,7 @@ namespace B.Unified.Payment.Sample.Alipay.Demos;
 /// <summary>支付宝退款 Demo — 发起退款 + 查单</summary>
 public static class AlipayRefundDemo
 {
-    public static void Run()
+    public static async Task RunAsync()
     {
         Console.WriteLine("\n╔══════════════════════════════════════════╗");
         Console.WriteLine("║   支付宝退款 Demo                          ║");
@@ -23,7 +23,6 @@ public static class AlipayRefundDemo
         Console.Write("请输入渠道订单号 (ChannelOrderNo / TradeNo): ");
         var channelOrderNo = Console.ReadLine()?.Trim();
 
-        // 生成退款单号
         var refundOrderId = $"RF{DateTime.Now:yyyyMMddHHmmssfff}";
 
         Console.Write("退款金额(分): ");
@@ -44,20 +43,18 @@ public static class AlipayRefundDemo
             NotifyUrl      = "https://your-domain.com/api/refund/notify/alipay"
         };
 
-        // 1) 发起退款
         Console.WriteLine($"\n═══ 发起退款 ═══");
         Console.WriteLine($"  退款单号: {refundOrderId}");
         Console.WriteLine($"  退款金额: {refundAmount}分 ({refundAmount / 100m:F2}元)");
 
-        var result = refundService.RefundAsync(rq, AlipayConfig.Context).GetAwaiter().GetResult();
+        var result = await refundService.RefundAsync(rq, AlipayConfig.Context);
         Console.WriteLine($"  State: {result.State}");
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  ErrCode: {result.ChannelErrCode}");
         Console.WriteLine($"  ErrMsg: {result.ChannelErrMsg}");
 
-        // 2) 查单
         Console.WriteLine($"\n═══ 退款查单 ═══");
-        var queryResult = refundService.QueryAsync(refundOrderId, payOrderId, channelOrderNo, AlipayConfig.Context).GetAwaiter().GetResult();
+        var queryResult = await refundService.QueryAsync(refundOrderId, payOrderId, channelOrderNo, AlipayConfig.Context);
         Console.WriteLine($"  State: {queryResult.State}");
         Console.WriteLine($"  ErrCode: {queryResult.ChannelErrCode}");
         Console.WriteLine($"  ErrMsg: {queryResult.ChannelErrMsg}");

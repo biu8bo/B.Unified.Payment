@@ -258,6 +258,13 @@ var result = await closeService.CloseAsync(new CloseOrderRQ { PayOrderId = "ORDE
 
 ### 5. 运行 Sample
 
+控制台 Demo 均提供 `RunAsync()` 方法，在 `Program.cs` 中取消注释后使用 `await` 调用：
+
+```csharp
+// Program.cs
+await AlipayPayDemo.RunAsync();
+```
+
 ```bash
 # 控制台示例
 cd Sample/B.Unified.Payment.Sample.Alipay && dotnet run

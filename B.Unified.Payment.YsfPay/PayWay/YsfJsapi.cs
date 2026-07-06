@@ -24,7 +24,7 @@ namespace B.Unified.Payment.YsfPay.PayWay
             return null;
         }
 
-        protected override Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
+        protected override async Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
             var cfg = YsfpayConfigHelper.GetConfig(ctx);
             var orderType = YsfHttpUtil.GetPayOrderType("YSF_JSAPI");
@@ -39,7 +39,7 @@ namespace B.Unified.Payment.YsfPay.PayWay
                 ["frontUrl"] = rq.ReturnUrl
             };
 
-            var resJson = YsfHttpUtil.PackageParamAndReq("/gateway/api/pay/unifiedorder", reqParams, cfg);
+            var resJson = await YsfHttpUtil.PackageParamAndReqAsync("/gateway/api/pay/unifiedorder", reqParams, cfg).ConfigureAwait(false);
             var respCode = resJson["respCode"]?.ToString();
             var rs = new YsfJsapiOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
 
@@ -51,7 +51,7 @@ namespace B.Unified.Payment.YsfPay.PayWay
             else
                 rs.ChannelRetMsg = ChannelRetMsg.ConfirmFail(respCode, resJson["respMsg"]?.ToString());
 
-            return Task.FromResult<AbstractRS>(rs);
+            return rs;
         }
     }
 }

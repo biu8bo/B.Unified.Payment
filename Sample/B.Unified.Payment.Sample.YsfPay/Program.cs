@@ -3,9 +3,9 @@
 
 using B.Unified.Payment.Sample.YsfPay.Demos;
 
-// YsfPayDemo.Run();
-// YsfQueryDemo.Run();
-// YsfRefundDemo.Run();
-// YsfCloseDemo.Run();
+// await YsfPayDemo.RunAsync();
+// await YsfQueryDemo.RunAsync();
+// await YsfRefundDemo.RunAsync();
+// await YsfCloseDemo.RunAsync();
 
 Console.WriteLine("请取消注释要运行的 Demo");

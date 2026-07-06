@@ -22,7 +22,7 @@ namespace B.Unified.Payment.YsfPay.Services.Query
                 ["orderType"] = YsfHttpUtil.GetOrderType(payOrderId?.Contains("YSF") == true ? "YSF_JSAPI" : "YSF_BAR")
             };
 
-            var resJson = YsfHttpUtil.PackageParamAndReq("/gateway/api/pay/queryOrder", reqParams, cfg);
+            var resJson = await YsfHttpUtil.PackageParamAndReqAsync("/gateway/api/pay/queryOrder", reqParams, cfg).ConfigureAwait(false);
             if (resJson == null) return ChannelRetMsg.Waiting();
 
             var respCode = resJson["respCode"]?.ToString();

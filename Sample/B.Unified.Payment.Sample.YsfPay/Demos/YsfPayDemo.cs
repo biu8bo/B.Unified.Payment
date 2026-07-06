@@ -12,14 +12,13 @@ public static class YsfPayDemo
     private static readonly IPaymentServiceFactory _factory =
         PaymentServiceBuilder.Create().AddYsfPay().Build();
 
-    public static void Run()
+    public static async Task RunAsync()
     {
         Console.WriteLine("╔══════════════════════════════════════════╗");
         Console.WriteLine("║   云闪付支付 Demo                          ║");
         Console.WriteLine("╚══════════════════════════════════════════╝");
         Console.WriteLine("  ⚠ 请先在 YsfpayConfig.cs 中替换为真实商户参数");
 
-        // 1) JSAPI 支付
         Console.WriteLine("\n═══ YSF_JSAPI — JSAPI 支付 ═══");
         var jsapiRq = new UnifiedOrderRQ
         {
@@ -37,11 +36,10 @@ public static class YsfPayDemo
 
         Console.WriteLine($"  请求: PayOrderId={jsapiRq.PayOrderId} Amount={jsapiRq.Amount / 100m:F2}元");
         var jsapiService = _factory.GetPaymentService(YsfPayWay.JSAPI);
-        var jsapiRs = (UnifiedOrderRS)jsapiService.PayAsync(jsapiRq, YsfpayConfig.Context).GetAwaiter().GetResult();
+        var jsapiRs = (UnifiedOrderRS)await jsapiService.PayAsync(jsapiRq, YsfpayConfig.Context);
         Console.WriteLine($"  响应: ErrCode={jsapiRs.ErrCode} State={jsapiRs.ChannelRetMsg?.State}");
         Console.WriteLine($"  PayDataType={jsapiRs.PayDataType} PayData={jsapiRs.PayData?.Truncate(100)}");
 
-        // 2) 条码支付
         Console.WriteLine("\n═══ YSF_BAR — 条码支付 ═══");
         var barRq = new UnifiedOrderRQ
         {
@@ -58,7 +56,7 @@ public static class YsfPayDemo
 
         Console.WriteLine($"  请求: PayOrderId={barRq.PayOrderId} Amount={barRq.Amount / 100m:F2}元");
         var barService = _factory.GetPaymentService(YsfPayWay.BAR);
-        var barRs = (UnifiedOrderRS)barService.PayAsync(barRq, YsfpayConfig.Context).GetAwaiter().GetResult();
+        var barRs = (UnifiedOrderRS)await barService.PayAsync(barRq, YsfpayConfig.Context);
         Console.WriteLine($"  响应: ErrCode={barRs.ErrCode} State={barRs.ChannelRetMsg?.State}");
         Console.WriteLine($"  IsNeedQuery={barRs.ChannelRetMsg?.IsNeedQuery}");
 

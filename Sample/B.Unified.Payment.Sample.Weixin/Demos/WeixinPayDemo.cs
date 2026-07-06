@@ -12,26 +12,27 @@ public static class WeixinPayDemo
     private static readonly IPaymentServiceFactory _factory =
         PaymentServiceBuilder.Create().AddWeixin().Build();
 
-    public static void Run()
-    {        Console.WriteLine("╔══════════════════════════════════════════╗");
+    public static async Task RunAsync()
+    {
+        Console.WriteLine("╔══════════════════════════════════════════╗");
         Console.WriteLine("║   微信支付 Demo                            ║");
         Console.WriteLine("╚══════════════════════════════════════════╝");
         Console.WriteLine("  ⚠ 请先在 WeixinConfig.cs 中替换为真实商户参数");
 
-        Pay("WX_JSAPI — 公众号支付", WxPayWay.JSAPI, rq =>
+        await PayAsync("WX_JSAPI — 公众号支付", WxPayWay.JSAPI, rq =>
             rq.ChannelUserId = "oUpF8uMuAJO_M2pxb1Q9zNjWeS6o");
 
-        Pay("WX_NATIVE — 扫码支付", WxPayWay.NATIVE);
+        await PayAsync("WX_NATIVE — 扫码支付", WxPayWay.NATIVE);
 
-        Pay("WX_H5 — H5支付", WxPayWay.H5, rq =>
+        await PayAsync("WX_H5 — H5支付", WxPayWay.H5, rq =>
             rq.ClientIp = "8.8.8.8");
 
-        Pay("WX_APP — APP支付", WxPayWay.APP);
+        await PayAsync("WX_APP — APP支付", WxPayWay.APP);
 
-        Pay("WX_LITE — 小程序支付", WxPayWay.LITE, rq =>
+        await PayAsync("WX_LITE — 小程序支付", WxPayWay.LITE, rq =>
             rq.ChannelUserId = "oUpF8uMuAJO_M2pxb1Q9zNjWeS6o");
 
-        Pay("WX_BAR — 付款码支付", WxPayWay.BAR, rq =>
+        await PayAsync("WX_BAR — 付款码支付", WxPayWay.BAR, rq =>
             rq.AuthCode = "130000000000000000");
 
         Console.ForegroundColor = ConsoleColor.Green;
@@ -41,7 +42,7 @@ public static class WeixinPayDemo
         Console.ResetColor();
     }
 
-    private static void Pay(string title, Abstract.Models.PayWayCode wayCode, Action<UnifiedOrderRQ>? setup = null)
+    private static async Task PayAsync(string title, Abstract.Models.PayWayCode wayCode, Action<UnifiedOrderRQ>? setup = null)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine($"\n═══ {title} ═══");
@@ -62,7 +63,7 @@ public static class WeixinPayDemo
 
         Console.WriteLine($"  请求: PayOrderId={rq.PayOrderId} Amount={rq.Amount / 100m:F2}元");
         var service = _factory.GetPaymentService(wayCode);
-        var rs = (UnifiedOrderRS)service.PayAsync(rq, WeixinConfig.Context).GetAwaiter().GetResult();
+        var rs = (UnifiedOrderRS)await service.PayAsync(rq, WeixinConfig.Context);
 
         Console.ForegroundColor = rs.ErrCode == null ? ConsoleColor.Green : ConsoleColor.Red;
         Console.WriteLine($"  响应: ErrCode={rs.ErrCode} State={rs.ChannelRetMsg?.State} PayDataType={rs.PayDataType}");

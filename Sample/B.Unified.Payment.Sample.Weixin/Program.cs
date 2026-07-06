@@ -3,9 +3,9 @@
 
 using B.Unified.Payment.Sample.Weixin.Demos;
 
-// WeixinPayDemo.Run();
-// WeixinQueryDemo.Run();
-// WeixinRefundDemo.Run();
-// WeixinCloseDemo.Run();
+// await WeixinPayDemo.RunAsync();
+// await WeixinQueryDemo.RunAsync();
+// await WeixinRefundDemo.RunAsync();
+// await WeixinCloseDemo.RunAsync();
 
 Console.WriteLine("请取消注释要运行的 Demo");

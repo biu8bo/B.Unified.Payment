@@ -7,7 +7,7 @@ namespace B.Unified.Payment.Sample.Weixin.Demos;
 /// <summary>微信支付订单查询 Demo</summary>
 public static class WeixinQueryDemo
 {
-    public static void Run()
+    public static async Task RunAsync()
     {
         Console.WriteLine("\n╔══════════════════════════════════════════╗");
         Console.WriteLine("║   微信查单 Demo                            ║");
@@ -25,7 +25,7 @@ public static class WeixinQueryDemo
         }
 
         Console.WriteLine($"\n  正在查询: {payOrderId}");
-        var result = queryService.QueryAsync(payOrderId, WeixinConfig.Context).GetAwaiter().GetResult();
+        var result = await queryService.QueryAsync(payOrderId, WeixinConfig.Context);
 
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  State:          {result.State}");

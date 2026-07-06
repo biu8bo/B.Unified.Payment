@@ -8,7 +8,7 @@ namespace B.Unified.Payment.Sample.Alipay.Demos;
 /// <summary>支付宝关单 Demo</summary>
 public static class AlipayCloseDemo
 {
-    public static void Run()
+    public static async Task RunAsync()
     {
         Console.WriteLine("\n╔══════════════════════════════════════════╗");
         Console.WriteLine("║   支付宝关单 Demo                          ║");
@@ -26,8 +26,7 @@ public static class AlipayCloseDemo
         }
 
         Console.WriteLine($"\n  正在关单: {payOrderId}");
-        var result = closeService.CloseAsync(new CloseOrderRQ { PayOrderId = payOrderId }, AlipayConfig.Context)
-            .GetAwaiter().GetResult();
+        var result = await closeService.CloseAsync(new CloseOrderRQ { PayOrderId = payOrderId }, AlipayConfig.Context);
 
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  State:          {result.State}");

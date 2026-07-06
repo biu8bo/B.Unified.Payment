@@ -8,7 +8,7 @@ namespace B.Unified.Payment.Sample.YsfPay.Demos;
 /// <summary>云闪付退款 Demo</summary>
 public static class YsfRefundDemo
 {
-    public static void Run()
+    public static async Task RunAsync()
     {
         Console.WriteLine("\n╔══════════════════════════════════════════╗");
         Console.WriteLine("║   云闪付退款 Demo                          ║");
@@ -36,16 +36,14 @@ public static class YsfRefundDemo
             RefundReason   = reason,
         };
 
-        // 发起退款
         Console.WriteLine($"\n═══ 发起退款 ═══");
-        var result = refundService.RefundAsync(rq, YsfpayConfig.Context).GetAwaiter().GetResult();
+        var result = await refundService.RefundAsync(rq, YsfpayConfig.Context);
         Console.WriteLine($"  State: {result.State}");
         Console.WriteLine($"  ErrCode: {result.ChannelErrCode}");
         Console.WriteLine($"  ErrMsg: {result.ChannelErrMsg}");
 
-        // 查单
         Console.WriteLine($"\n═══ 退款查单 ═══");
-        var queryResult = refundService.QueryAsync(refundOrderId, payOrderId, null, YsfpayConfig.Context).GetAwaiter().GetResult();
+        var queryResult = await refundService.QueryAsync(refundOrderId, payOrderId, null, YsfpayConfig.Context);
         Console.WriteLine($"  State: {queryResult.State}");
         Console.WriteLine($"  ErrCode: {queryResult.ChannelErrCode}");
     }

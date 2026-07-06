@@ -7,7 +7,7 @@ namespace B.Unified.Payment.Sample.YsfPay.Demos;
 /// <summary>云闪付查单 Demo</summary>
 public static class YsfQueryDemo
 {
-    public static void Run()
+    public static async Task RunAsync()
     {
         Console.WriteLine("\n╔══════════════════════════════════════════╗");
         Console.WriteLine("║   云闪付查单 Demo                          ║");
@@ -19,7 +19,7 @@ public static class YsfQueryDemo
         var payOrderId = Console.ReadLine()?.Trim();
         if (string.IsNullOrEmpty(payOrderId)) { Console.WriteLine("  跳过"); return; }
 
-        var result = queryService.QueryAsync(payOrderId, YsfpayConfig.Context).GetAwaiter().GetResult();
+        var result = await queryService.QueryAsync(payOrderId, YsfpayConfig.Context);
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  State: {result.State}");
         Console.WriteLine($"  ErrCode: {result.ChannelErrCode}");

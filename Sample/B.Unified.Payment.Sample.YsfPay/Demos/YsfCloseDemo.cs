@@ -9,7 +9,7 @@ namespace B.Unified.Payment.Sample.YsfPay.Demos;
 /// <summary>云闪付关单 Demo</summary>
 public static class YsfCloseDemo
 {
-    public static void Run()
+    public static async Task RunAsync()
     {
         Console.WriteLine("\n╔══════════════════════════════════════════╗");
         Console.WriteLine("║   云闪付关单 Demo                          ║");
@@ -32,11 +32,11 @@ public static class YsfCloseDemo
             wayCode = YsfPayWay.BAR;
 
         Console.WriteLine($"\n  正在关单: {payOrderId} ({wayCode})");
-        var result = closeService.CloseAsync(new CloseOrderRQ
+        var result = await closeService.CloseAsync(new CloseOrderRQ
         {
             PayOrderId = payOrderId,
             WayCode    = wayCode
-        }, YsfpayConfig.Context).GetAwaiter().GetResult();
+        }, YsfpayConfig.Context);
 
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  State:          {result.State}");

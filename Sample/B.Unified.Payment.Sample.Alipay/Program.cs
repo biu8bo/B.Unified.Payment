@@ -3,9 +3,9 @@
 
 using B.Unified.Payment.Sample.Alipay.Demos;
 
-//AlipayPayDemo.Run();
-//AlipayQueryDemo.Run();
-//AlipayRefundDemo.Run();
-//AlipayCloseDemo.Run();
+//await AlipayPayDemo.RunAsync();
+//await AlipayQueryDemo.RunAsync();
+//await AlipayRefundDemo.RunAsync();
+//await AlipayCloseDemo.RunAsync();
 
 Console.WriteLine("请取消注释要运行的 Demo");

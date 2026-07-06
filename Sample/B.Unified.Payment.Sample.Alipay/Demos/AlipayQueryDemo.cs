@@ -7,7 +7,7 @@ namespace B.Unified.Payment.Sample.Alipay.Demos;
 /// <summary>支付宝订单查询 Demo</summary>
 public static class AlipayQueryDemo
 {
-    public static void Run()
+    public static async Task RunAsync()
     {
         Console.WriteLine("\n╔══════════════════════════════════════════╗");
         Console.WriteLine("║   支付宝查单 Demo                          ║");
@@ -25,7 +25,7 @@ public static class AlipayQueryDemo
         }
 
         Console.WriteLine($"\n  正在查询: {payOrderId}");
-        var result = queryService.QueryAsync(payOrderId, AlipayConfig.Context).GetAwaiter().GetResult();
+        var result = await queryService.QueryAsync(payOrderId, AlipayConfig.Context);
 
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  State:          {result.State}");

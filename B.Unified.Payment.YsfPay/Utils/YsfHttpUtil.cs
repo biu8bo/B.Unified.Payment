@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -25,7 +26,7 @@ namespace B.Unified.Payment.YsfPay.Utils
         /// <summary>
         /// 封装公共参数 + 签名 + 发送 HTTP POST，返回 JSONObject
         /// </summary>
-        public static JObject PackageParamAndReq(string apiUri, JObject reqParams, YsfpayIsvParams cfg)
+        public static async Task<JObject> PackageParamAndReqAsync(string apiUri, JObject reqParams, YsfpayIsvParams cfg)
         {
             reqParams["serProvId"] = cfg.SerProvId;
             reqParams["merId"] = cfg.MerId;
@@ -36,8 +37,8 @@ namespace B.Unified.Payment.YsfPay.Utils
             var url = cfg.GetServerUrl() + apiUri;
             var json = reqParams.ToString(Formatting.None);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var resp = _http.PostAsync(url, content).GetAwaiter().GetResult();
-            var respBody = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var resp = await _http.PostAsync(url, content).ConfigureAwait(false);
+            var respBody = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JObject.Parse(respBody);
         }
 

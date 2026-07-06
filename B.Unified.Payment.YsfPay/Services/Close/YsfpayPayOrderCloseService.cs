@@ -14,7 +14,7 @@ namespace B.Unified.Payment.YsfPay.Services.Close
     {
         public string GetIfCode() => Constants.IfCode.YSFPAY;
 
-        public Task<ChannelRetMsg> CloseAsync(CloseOrderRQ rq, MchAppConfigContext ctx)
+        public async Task<ChannelRetMsg> CloseAsync(CloseOrderRQ rq, MchAppConfigContext ctx)
         {
             if (string.IsNullOrEmpty(rq.WayCode))
                 throw new BizException("云闪付关单 WayCode 不能为空");
@@ -29,19 +29,19 @@ namespace B.Unified.Payment.YsfPay.Services.Close
 
             try
             {
-                var resJson = YsfHttpUtil.PackageParamAndReq("/gateway/api/pay/closeOrder", reqParams, cfg);
+                var resJson = await YsfHttpUtil.PackageParamAndReqAsync("/gateway/api/pay/closeOrder", reqParams, cfg).ConfigureAwait(false);
                 if (resJson == null)
-                    return Task.FromResult(ChannelRetMsg.SysError("【云闪付】请求关闭订单异常"));
+                    return ChannelRetMsg.SysError("【云闪付】请求关闭订单异常");
 
                 var respCode = resJson["respCode"]?.ToString();
                 if (respCode == "00")
-                    return Task.FromResult(ChannelRetMsg.ConfirmSuccess());
+                    return ChannelRetMsg.ConfirmSuccess();
 
-                return Task.FromResult(ChannelRetMsg.SysError(resJson["respMsg"]?.ToString()));
+                return ChannelRetMsg.SysError(resJson["respMsg"]?.ToString());
             }
             catch (System.Exception ex)
             {
-                return Task.FromResult(ChannelRetMsg.SysError(ex.Message));
+                return ChannelRetMsg.SysError(ex.Message);
             }
         }
     }

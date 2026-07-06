@@ -8,7 +8,7 @@ namespace B.Unified.Payment.Sample.Weixin.Demos;
 /// <summary>微信退款 Demo — 发起退款 + 查单</summary>
 public static class WeixinRefundDemo
 {
-    public static void Run()
+    public static async Task RunAsync()
     {
         Console.WriteLine("\n╔══════════════════════════════════════════╗");
         Console.WriteLine("║   微信退款 Demo                            ║");
@@ -24,7 +24,6 @@ public static class WeixinRefundDemo
         if (!long.TryParse(Console.ReadLine(), out var payAmount) || payAmount <= 0)
         { Console.WriteLine("  跳过（金额无效）"); return; }
 
-        // 生成退款单号
         var refundOrderId = $"RF{DateTime.Now:yyyyMMddHHmmssfff}";
 
         Console.Write("退款金额(分): ");
@@ -45,20 +44,18 @@ public static class WeixinRefundDemo
             NotifyUrl      = "https://your-domain.com/api/refund/notify/weixin"
         };
 
-        // 1) 发起退款
         Console.WriteLine($"\n═══ 发起退款 ═══");
         Console.WriteLine($"  退款单号: {refundOrderId}");
         Console.WriteLine($"  原金额: {payAmount}分  退款: {refundAmount}分");
 
-        var result = refundService.RefundAsync(rq, WeixinConfig.Context).GetAwaiter().GetResult();
+        var result = await refundService.RefundAsync(rq, WeixinConfig.Context);
         Console.WriteLine($"  State: {result.State}");
         Console.WriteLine($"  ChannelOrderId: {result.ChannelOrderId}");
         Console.WriteLine($"  ErrCode: {result.ChannelErrCode}");
         Console.WriteLine($"  ErrMsg: {result.ChannelErrMsg}");
 
-        // 2) 查单
         Console.WriteLine($"\n═══ 退款查单 ═══");
-        var queryResult = refundService.QueryAsync(refundOrderId, payOrderId, null, WeixinConfig.Context).GetAwaiter().GetResult();
+        var queryResult = await refundService.QueryAsync(refundOrderId, payOrderId, null, WeixinConfig.Context);
         Console.WriteLine($"  State: {queryResult.State}");
         Console.WriteLine($"  ErrCode: {queryResult.ChannelErrCode}");
         Console.WriteLine($"  ErrMsg: {queryResult.ChannelErrMsg}");

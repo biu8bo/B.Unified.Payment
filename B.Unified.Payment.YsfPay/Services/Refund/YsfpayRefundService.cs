@@ -35,7 +35,7 @@ namespace B.Unified.Payment.YsfPay.Services.Refund
                 ["orderType"] = YsfHttpUtil.GetOrderType("YSF_BAR")
             };
 
-            var resJson = YsfHttpUtil.PackageParamAndReq("/gateway/api/pay/refund", reqParams, cfg);
+            var resJson = await YsfHttpUtil.PackageParamAndReqAsync("/gateway/api/pay/refund", reqParams, cfg).ConfigureAwait(false);
             if (resJson == null) return new ChannelRetMsg { State = ChannelState.UNKNOWN };
 
             var respCode = resJson["respCode"]?.ToString();
@@ -56,7 +56,7 @@ namespace B.Unified.Payment.YsfPay.Services.Refund
                 ["orderType"] = YsfHttpUtil.GetOrderType("YSF_BAR")
             };
 
-            var resJson = YsfHttpUtil.PackageParamAndReq("/gateway/api/pay/refundQuery", reqParams, cfg);
+            var resJson = await YsfHttpUtil.PackageParamAndReqAsync("/gateway/api/pay/refundQuery", reqParams, cfg).ConfigureAwait(false);
             if (resJson == null) return new ChannelRetMsg { State = ChannelState.UNKNOWN };
 
             var respCode = resJson["respCode"]?.ToString();
