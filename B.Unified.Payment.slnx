@@ -2,8 +2,10 @@
   <Folder Name="/Sample/">
     <Project Path="B.Unified.Payment.AlipaySample/B.Unified.Payment.AlipaySample.csproj" />
     <Project Path="B.Unified.Payment.WeixinSample/B.Unified.Payment.WeixinSample.csproj" />
+    <Project Path="B.Unified.Payment.YsfPaySample/B.Unified.Payment.YsfPaySample.csproj" />
   </Folder>
   <Project Path="B.Unified.Payment.Abstract/B.Unified.Payment.Abstract.csproj" />
   <Project Path="B.Unified.Payment.Alipay/B.Unified.Payment.Alipay.csproj" />
   <Project Path="B.Unified.Payment.Weixin/B.Unified.Payment.Weixin.csproj" />
+  <Project Path="B.Unified.Payment.YsfPay/B.Unified.Payment.YsfPay.csproj" />
 </Solution>

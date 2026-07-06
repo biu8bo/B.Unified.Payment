@@ -1,0 +1,51 @@
+using B.Unified.Payment.Abstract;
+using B.Unified.Payment.Abstract.Models.Refund;
+using B.Unified.Payment.YsfPay;
+
+namespace B.Unified.Payment.YsfPaySample;
+
+/// <summary>云闪付退款 Demo</summary>
+public static class YsfRefundDemo
+{
+    public static void Run()
+    {
+        Console.WriteLine("\n╔══════════════════════════════════════════╗");
+        Console.WriteLine("║   云闪付退款 Demo                          ║");
+        Console.WriteLine("╚══════════════════════════════════════════╝");
+
+        IRefundService refundService = new YsfpayRefundService();
+
+        Console.Write("请输入原支付订单号 (PayOrderId): ");
+        var payOrderId = Console.ReadLine()?.Trim();
+        if (string.IsNullOrEmpty(payOrderId)) { Console.WriteLine("  跳过"); return; }
+
+        var refundOrderId = $"RF{DateTime.Now:yyyyMMddHHmmssfff}";
+
+        Console.Write("退款金额(分): ");
+        if (!long.TryParse(Console.ReadLine(), out var refundAmount)) { refundAmount = 1; }
+
+        Console.Write("退款原因: ");
+        var reason = Console.ReadLine()?.Trim() ?? "测试退款";
+
+        var rq = new RefundOrderRQ
+        {
+            PayOrderId     = payOrderId,
+            RefundOrderId  = refundOrderId,
+            RefundAmount   = refundAmount,
+            RefundReason   = reason,
+        };
+
+        // 发起退款
+        Console.WriteLine($"\n═══ 发起退款 ═══");
+        var result = refundService.Refund(rq, YsfpayConfig.Context);
+        Console.WriteLine($"  State: {result.State}");
+        Console.WriteLine($"  ErrCode: {result.ChannelErrCode}");
+        Console.WriteLine($"  ErrMsg: {result.ChannelErrMsg}");
+
+        // 查单
+        Console.WriteLine($"\n═══ 退款查单 ═══");
+        var queryResult = refundService.Query(refundOrderId, payOrderId, null, YsfpayConfig.Context);
+        Console.WriteLine($"  State: {queryResult.State}");
+        Console.WriteLine($"  ErrCode: {queryResult.ChannelErrCode}");
+    }
+}
