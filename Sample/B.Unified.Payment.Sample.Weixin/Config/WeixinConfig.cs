@@ -1,5 +1,6 @@
 using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Weixin.Constants;
+using B.Unified.Payment.Weixin.Models.Mch;
 using B.Unified.Payment.Weixin.Models.MchParams;
 using Newtonsoft.Json.Linq;
 
@@ -23,11 +24,14 @@ public static class WeixinConfig
         var ctx = new MchAppConfigContext();
         ctx.NormalMchParamsMap[IfCode.WXPAY] = new WxpayNormalMchParams
         {
-            AppId       = keys["AppId"].ToString(),
-            MchId       = keys["MchId"].ToString(),
-            ApiV3Key    = keys["ApiV3Key"].ToString(),
-            SerialNo    = keys["SerialNo"].ToString(),
-            PrivateKey  = keys["PrivateKey"].ToString()
+            AppId             = keys["AppId"].ToString(),
+            MchId             = keys["MchId"].ToString(),
+            ApiV3Key          = keys["ApiV3Key"].ToString(),
+            SerialNo          = keys["SerialNo"].ToString(),
+            PrivateKey        = keys["PrivateKey"].ToString(),
+            UseCert           = keys["UseCert"] != null ? (CertMode)keys["UseCert"].Value<int>() : (CertMode?)null,
+            WxpayPublicKeyId  = keys["WxpayPublicKeyId"]?.ToString(),
+            WxpayPublicKey    = keys["WxpayPublicKey"]?.ToString()
         };
         return ctx;
     }

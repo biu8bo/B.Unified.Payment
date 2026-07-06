@@ -2,7 +2,11 @@
   "Alipay": {
     "AppId": "your_app_id_here",
     "PrivateKey": "your_private_key_here",
+    "UseCert": 0,
     "AlipayPublicKey": "your_alipay_public_key_here",
+    "AppPublicCert": "",
+    "AlipayPublicCert": "",
+    "AlipayRootCert": "",
     "Sandbox": 1,
     "SignType": "RSA2"
   },
@@ -11,14 +15,19 @@
     "MchId": "0000000000",
     "ApiV3Key": "your32char_apiv3_key_here_12345",
     "SerialNo": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    "PrivateKey": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
+    "PrivateKey": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----",
+    "UseCert": 0,
+    "WxpayPublicKeyId": "PUB_KEY_ID_00000000000000000000000000000000",
+    "WxpayPublicKey": "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----"
   },
   "YsfPay": {
     "Sandbox": 1,
     "SerProvId": "your_ser_prov_id",
     "MerId": "your_mer_id",
+    "UseCert": 1,
     "PrivateCert": "base64_pkcs12_cert_content",
     "PrivateCertPwd": "cert_password",
+    "PrivateKey": "",
     "YsfpayPublicKey": "base64_public_key_content"
   }
 }

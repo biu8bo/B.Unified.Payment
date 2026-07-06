@@ -1,4 +1,5 @@
 using B.Unified.Payment.Abstract.Models.Mch;
+using B.Unified.Payment.Alipay.Models.Mch;
 
 namespace B.Unified.Payment.Alipay.Models.MchParams
 {

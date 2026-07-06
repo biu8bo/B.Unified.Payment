@@ -25,6 +25,7 @@ B.Unified.Payment 是一套 .NET 统一支付 SDK，参考 [Jeepay](https://gith
 - **强类型安全** — `PayWayCode` / `PayDataTypeCode` 值类、`PayOrderState` 枚举，编译期防止拼写错误
 - **内置日志** — `PayLogger` 基于 `Microsoft.Extensions.Logging`，支持标准 .NET 日志体系
 - **全异步** — 所有接口方法均为 `Task` 异步（`PayAsync` / `QueryAsync` / `RefundAsync`）
+- **公钥/证书双模式** — 各渠道独立支持 `CertMode`（公钥模式 / 证书模式），枚举与实现逻辑均在渠道项目中，Abstract 层不耦合
 - **盛派 SDK** — 微信支付模块使用 [Senparc.Weixin.TenPayV3](https://github.com/JeffreySu/WeiXinMPSDK)，签名和 HTTP 调用均由 SDK 内部完成
 
 ## 已完成功能
@@ -69,6 +70,7 @@ B.Unified.Payment 是一套 .NET 统一支付 SDK，参考 [Jeepay](https://gith
 - `PayOrderState` — 支付订单状态枚举（与 Jeepay `orderState` 数值对齐）
 - `UnifiedOrderRS.FinalizePayData()` — 自动填充 `PayDataType` / `PayData`（对齐 Jeepay 统一下单响应逻辑）
 - 微信模块使用 [Senparc.Weixin.TenPayV3](https://github.com/JeffreySu/WeiXinMPSDK)，无需手动计算 RSA 签名
+- 各渠道支持公钥/证书双模式（`UseCert`），详见下方配置说明
 - 秘钥统一从 `keys.json` 读取，已在 `.gitignore` 中忽略
 
 ## 项目结构
@@ -83,7 +85,7 @@ B.Unified.Payment/
 │   │   ├── PayWayCode.cs                #   支付方式值类
 │   │   ├── Base/                        #   AbstractRQ / AbstractRS
 │   │   ├── Channel/                     #   ChannelRetMsg / ChannelState
-│   │   ├── Mch/                         #   MchAppConfigContext / CertMode / EnvFlag / CurrencyCode
+│   │   ├── Mch/                         #   MchAppConfigContext / EnvFlag / CurrencyCode
 │   │   ├── Payment/                     #   UnifiedOrderRQ/RS、PayDataTypeCode、PayOrderState 等
 │   │   └── Refund/                      #   RefundOrderRQ
 │   ├── Exceptions/                      #   BizException / ChannelException
@@ -96,6 +98,7 @@ B.Unified.Payment/
 │   │   ├── Query/                       #   AlipayPayOrderQueryService
 │   │   └── Refund/                      #   AlipayRefundService
 │   ├── Models/
+│   │   ├── Mch/                         #   CertMode（渠道自有）
 │   │   ├── MchParams/                   #   AlipayNormalMchParams
 │   │   └── Responses/                   #   8 个 Ali*OrderRS
 │   ├── Infrastructure/                  #   AlipayClientFactory
@@ -108,6 +111,7 @@ B.Unified.Payment/
 │   │   ├── Query/                       #   WeixinPayOrderQueryService
 │   │   └── Refund/                      #   WeixinRefundService
 │   ├── Models/
+│   │   ├── Mch/                         #   CertMode（渠道自有）
 │   │   ├── MchParams/                   #   WxpayNormalMchParams
 │   │   └── Responses/                   #   6 个 Wx*OrderRS
 │   ├── Infrastructure/                  #   WxPayHelper
@@ -120,6 +124,7 @@ B.Unified.Payment/
 │   │   ├── Query/                       #   YsfpayPayOrderQueryService
 │   │   └── Refund/                      #   YsfpayRefundService
 │   ├── Models/
+│   │   ├── Mch/                         #   CertMode（渠道自有）
 │   │   ├── MchParams/                   #   YsfpayIsvParams
 │   │   └── Responses/                   #   YsfOrderRS
 │   ├── Utils/                           #   YsfHttpUtil / YsfpayConfigHelper
@@ -267,13 +272,19 @@ curl -X POST http://localhost:5000/api/payment/pay \
 
 ## 配置参数说明
 
+各渠道通过 `UseCert` 切换密钥模式：`0` = 公钥模式，`1` = 证书模式。未配置时按已有字段自动推断（见各渠道说明）。
+
 ### 支付宝（keys.json → Alipay）
 
 | 字段 | 说明 |
 |------|------|
 | `AppId` | 支付宝开放平台应用 ID |
 | `PrivateKey` | 应用私钥（PKCS8 格式） |
-| `AlipayPublicKey` | 支付宝公钥 |
+| `UseCert` | 密钥模式：`0` 公钥 / `1` 证书（默认 `0`） |
+| `AlipayPublicKey` | 支付宝公钥（公钥模式必填） |
+| `AppPublicCert` | 应用公钥证书内容（证书模式必填） |
+| `AlipayPublicCert` | 支付宝公钥证书内容（证书模式必填） |
+| `AlipayRootCert` | 支付宝根证书内容（证书模式必填） |
 | `Sandbox` | 1=沙箱, 0=生产 |
 | `SignType` | 签名方式，推荐 RSA2 |
 
@@ -284,8 +295,11 @@ curl -X POST http://localhost:5000/api/payment/pay \
 | `AppId` | 公众号/小程序 AppId |
 | `MchId` | 微信支付商户号 |
 | `ApiV3Key` | APIv3 密钥（32 位） |
-| `SerialNo` | 商户证书序列号 |
-| `PrivateKey` | 商户私钥（PKCS8 PEM 格式） |
+| `SerialNo` | 商户 API 证书序列号（请求签名用） |
+| `PrivateKey` | 商户 API 证书私钥（PKCS8 PEM 格式） |
+| `UseCert` | 密钥模式：`0` 公钥 / `1` 平台证书（未配置时，若填写了公钥 ID 则自动为公钥模式） |
+| `WxpayPublicKeyId` | 微信支付公钥 ID（公钥模式验签） |
+| `WxpayPublicKey` | 微信支付公钥内容（公钥模式验签） |
 
 ### 云闪付（keys.json → YsfPay）
 
@@ -293,9 +307,11 @@ curl -X POST http://localhost:5000/api/payment/pay \
 |------|------|
 | `SerProvId` | 服务商标识 |
 | `MerId` | 子商户号 |
-| `PrivateCert` | PKCS12 证书（Base64） |
+| `UseCert` | 密钥模式：`0` 公钥 / `1` 证书（未配置时，有 `PrivateCert` 则为证书模式） |
+| `PrivateCert` | PKCS12 证书（Base64，证书模式签名） |
 | `PrivateCertPwd` | 证书密码 |
-| `YsfpayPublicKey` | 云闪付公钥 |
+| `PrivateKey` | RSA 私钥（公钥模式签名，PKCS8 PEM 或 Base64） |
+| `YsfpayPublicKey` | 云闪付公钥（回调验签） |
 | `Sandbox` | 1=沙箱, 0=生产 |
 
 ## 技术栈

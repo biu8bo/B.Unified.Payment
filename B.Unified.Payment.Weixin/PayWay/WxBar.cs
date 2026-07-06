@@ -88,6 +88,9 @@ namespace B.Unified.Payment.Weixin.PayWay
             req.Headers.Add("Accept", "application/json");
             SignAsV3(req, cfg, "POST", path, json);
 
+            if (WxPayHelper.IsPublicKeyMode(cfg))
+                req.Headers.Add("Wechatpay-Serial", cfg.WxpayPublicKeyId);
+
             var httpResp = await _http.SendAsync(req);
             var body = await httpResp.Content.ReadAsStringAsync();
             return JObject.Parse(body);

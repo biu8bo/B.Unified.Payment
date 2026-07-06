@@ -1,5 +1,6 @@
 using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.YsfPay.Constants;
+using B.Unified.Payment.YsfPay.Models.Mch;
 using B.Unified.Payment.YsfPay.Models.MchParams;
 using Newtonsoft.Json.Linq;
 
@@ -26,8 +27,10 @@ public static class YsfpayConfig
             Sandbox         = (EnvFlag)keys["Sandbox"].Value<int>(),
             SerProvId       = keys["SerProvId"].ToString(),
             MerId           = keys["MerId"].ToString(),
-            PrivateCert     = keys["PrivateCert"].ToString(),
-            PrivateCertPwd  = keys["PrivateCertPwd"].ToString(),
+            UseCert         = keys["UseCert"] != null ? (CertMode)keys["UseCert"].Value<int>() : (CertMode?)null,
+            PrivateCert     = keys["PrivateCert"]?.ToString(),
+            PrivateCertPwd  = keys["PrivateCertPwd"]?.ToString(),
+            PrivateKey      = keys["PrivateKey"]?.ToString(),
             YsfpayPublicKey = keys["YsfpayPublicKey"].ToString()
         };
         return ctx;

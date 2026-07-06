@@ -31,7 +31,7 @@ namespace B.Unified.Payment.Alipay.Services.Refund
         {
             try
             {
-                var client = AlipayClientFactory.Build(ctx);
+                var holder = AlipayClientFactory.Build(ctx);
 
                 var model = new AlipayTradeRefundModel
                 {
@@ -44,7 +44,7 @@ namespace B.Unified.Payment.Alipay.Services.Refund
                 var req = new AlipayTradeRefundRequest();
                 req.SetBizModel(model);
 
-                var resp = client.Execute(req);
+                var resp = holder.Execute(req);
 
                 if (!resp.IsError)
                     return ChannelRetMsg.ConfirmSuccess(resp.TradeNo);
@@ -59,7 +59,7 @@ namespace B.Unified.Payment.Alipay.Services.Refund
 
         public async Task<ChannelRetMsg> QueryAsync(string refundOrderId, string payOrderId, string channelOrderNo, MchAppConfigContext ctx)
         {
-            var client = AlipayClientFactory.Build(ctx);
+            var holder = AlipayClientFactory.Build(ctx);
 
             var model = new AlipayTradeFastpayRefundQueryModel
             {
@@ -70,7 +70,7 @@ namespace B.Unified.Payment.Alipay.Services.Refund
             var req = new AlipayTradeFastpayRefundQueryRequest();
             req.SetBizModel(model);
 
-            var resp = client.Execute(req);
+            var resp = holder.Execute(req);
             var refundAmount = string.IsNullOrEmpty(resp.RefundAmount)
                 ? (long?)null
                 : (long)(decimal.Parse(resp.RefundAmount) * 100);

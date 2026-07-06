@@ -24,7 +24,7 @@ namespace B.Unified.Payment.Alipay.PayWay
 
         protected override Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
-            var client = AlipayClientFactory.Build(ctx);
+            var holder = AlipayClientFactory.Build(ctx);
             var model = new AlipayTradeAppPayModel
             {
                 OutTradeNo = rq.PayOrderId, Subject = rq.Subject, Body = rq.Body,
@@ -37,7 +37,7 @@ namespace B.Unified.Payment.Alipay.PayWay
 
             PayLogger.LogRequest("Alipay", "ALI_APP", "alipay.trade.app.pay", new { model.OutTradeNo, model.Subject, model.TotalAmount });
 
-            var payData = client.SdkExecute(req).Body;
+            var payData = holder.Client.SdkExecute(req).Body;
             var rs = new AliAppOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo, PayData = payData };
             var ret = ChannelRetMsg.Waiting();
             ret.ChannelAttach = payData;

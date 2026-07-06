@@ -28,7 +28,7 @@ namespace B.Unified.Payment.Alipay.PayWay
 
         protected override Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
-            var client = AlipayClientFactory.Build(ctx);
+            var holder = AlipayClientFactory.Build(ctx);
             var model = new AlipayTradePayModel
             {
                 OutTradeNo = rq.PayOrderId, Scene = "bar_code", AuthCode = rq.AuthCode?.Trim(),
@@ -41,7 +41,7 @@ namespace B.Unified.Payment.Alipay.PayWay
 
             PayLogger.LogRequest("Alipay", "ALI_BAR", "alipay.trade.pay", new { model.OutTradeNo, model.Scene, model.TotalAmount });
 
-            var resp = client.Execute(req);
+            var resp = holder.Execute(req);
             var rs = new AliBarOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
             rs.ChannelOriginResponse = resp.Body;
             var ret = new ChannelRetMsg

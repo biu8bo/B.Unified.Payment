@@ -8,7 +8,7 @@ namespace B.Unified.Payment.Abstract.Factory
 {
     /// <summary>
     /// 支付服务构建器 — 非 DI 场景下一行注册渠道，支持扩展自定义 PayWay。
-    /// <para>示例: PaymentServiceBuilder.Create().AddAlipay().AddPaymentService&lt;MyPay&gt;().Build()</para>
+    /// <para>示例: PaymentServiceBuilder.Create().AddPaymentService&lt;MyPay&gt;().Build()</para>
     /// </summary>
     public sealed class PaymentServiceBuilder
     {

@@ -2,6 +2,7 @@ using B.Unified.Payment.Abstract.Exceptions;
 using B.Unified.Payment.Abstract.Models.Mch;
 using B.Unified.Payment.Abstract.Models.Payment;
 using B.Unified.Payment.Weixin.Constants;
+using B.Unified.Payment.Weixin.Models.Mch;
 using B.Unified.Payment.Weixin.Models.MchParams;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.TenPayV3.Apis;
@@ -20,15 +21,35 @@ namespace B.Unified.Payment.Weixin.Infrastructure
             => ctx.GetNormalMchParams<WxpayNormalMchParams>(IfCode.WXPAY)
                ?? throw new BizException("未找到微信支付商户配置");
 
+        /// <summary>是否使用微信支付公钥模式（否则为平台证书模式）</summary>
+        public static bool IsPublicKeyMode(WxpayNormalMchParams cfg)
+        {
+            if (cfg.UseCert.HasValue)
+                return cfg.UseCert == CertMode.PublicKey;
+
+            return !string.IsNullOrEmpty(cfg.WxpayPublicKeyId)
+                && !string.IsNullOrEmpty(cfg.WxpayPublicKey);
+        }
+
         /// <summary>构建 Senparc 微信支付 V3 配置（用于 BasePayApis 与 TenPaySignHelper）</summary>
         public static ISenparcWeixinSettingForTenpayV3 BuildSetting(WxpayNormalMchParams cfg)
         {
-            var setting = new SenparcWeixinSetting();
-            setting.TenPayV3_AppId        = cfg.AppId;
-            setting.TenPayV3_MchId        = cfg.MchId;
-            setting.TenPayV3_APIv3Key     = cfg.ApiV3Key;
-            setting.TenPayV3_SerialNumber = cfg.SerialNo;
-            setting.TenPayV3_PrivateKey   = cfg.PrivateKey;
+            var setting = new SenparcWeixinSetting
+            {
+                TenPayV3_AppId        = cfg.AppId,
+                TenPayV3_MchId        = cfg.MchId,
+                TenPayV3_APIv3Key     = cfg.ApiV3Key,
+                TenPayV3_SerialNumber = cfg.SerialNo,
+                TenPayV3_PrivateKey   = cfg.PrivateKey
+            };
+
+            if (IsPublicKeyMode(cfg))
+            {
+                setting.TenPayV3_TenPayPubKeyEnable = true;
+                setting.TenPayV3_TenPayPubKey       = cfg.WxpayPublicKey;
+                setting.TenPayV3_TenPayPubKeyID       = cfg.WxpayPublicKeyId;
+            }
+
             return setting;
         }
 

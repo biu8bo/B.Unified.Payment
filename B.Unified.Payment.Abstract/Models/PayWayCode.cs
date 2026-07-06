@@ -5,7 +5,7 @@ namespace B.Unified.Payment.Abstract.Models
 {
     /// <summary>
     /// 支付方式代码值类 — 强类型封装，防止字符串拼写错误。
-    /// <para>各实现项目通过静态字段定义已知代码（如 AlipayPayWay.BAR / WxPayWay.JSAPI）。</para>
+    /// <para>各渠道实现项目通过静态字段定义已知代码（如 BAR / JSAPI）。</para>
     /// <para>调用方可使用 PayWayCode.Of("自定义值") 创建自定义代码。</para>
     /// </summary>
     [JsonConverter(typeof(PayWayCodeJsonConverter))]

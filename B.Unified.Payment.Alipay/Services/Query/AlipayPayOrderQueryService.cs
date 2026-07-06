@@ -18,12 +18,12 @@ namespace B.Unified.Payment.Alipay.Services.Query
 
         public async Task<ChannelRetMsg> QueryAsync(string payOrderId, MchAppConfigContext ctx)
         {
-            var client = AlipayClientFactory.Build(ctx);
+            var holder = AlipayClientFactory.Build(ctx);
 
             var req = new AlipayTradeQueryRequest();
             req.SetBizModel(new AlipayTradeQueryModel { OutTradeNo = payOrderId });
 
-            var resp = client.Execute(req);
+            var resp = holder.Execute(req);
 
             if ("TRADE_SUCCESS".Equals(resp.TradeStatus))
                 return ChannelRetMsg.ConfirmSuccess(resp.TradeNo);

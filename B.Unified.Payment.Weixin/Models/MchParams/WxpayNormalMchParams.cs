@@ -1,4 +1,5 @@
 using B.Unified.Payment.Abstract.Models.Mch;
+using B.Unified.Payment.Weixin.Models.Mch;
 
 namespace B.Unified.Payment.Weixin.Models.MchParams
 {
@@ -18,6 +19,9 @@ namespace B.Unified.Payment.Weixin.Models.MchParams
 
         /// <summary>API V2 密钥（MD5 签名，V2 接口需要）</summary>
         public string Key { get; set; }
+
+        /// <summary>密钥模式: 0-公钥模式, 1-证书模式（默认按配置字段自动推断）</summary>
+        public CertMode? UseCert { get; set; }
 
         /// <summary>API 版本: V2 / V3</summary>
         public string ApiVersion { get; set; }

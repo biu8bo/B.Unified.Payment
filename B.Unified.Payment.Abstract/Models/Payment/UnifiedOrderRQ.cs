@@ -45,7 +45,7 @@ namespace B.Unified.Payment.Abstract.Models.Payment
         /// <summary>商户订单号</summary>
         public string MchOrderNo { get; set; }
 
-        /// <summary>支付方式代码（如 AlipayPayWay.BAR / WxPayWay.JSAPI）</summary>
+        /// <summary>支付方式代码（由各渠道 PayWay 常量定义）</summary>
         public PayWayCode WayCode { get; set; }
 
         /// <summary>支付金额，单位：分</summary>

@@ -1,4 +1,5 @@
 using B.Unified.Payment.Abstract.Models.Mch;
+using B.Unified.Payment.YsfPay.Models.Mch;
 
 namespace B.Unified.Payment.YsfPay.Models.MchParams
 {
@@ -17,7 +18,13 @@ namespace B.Unified.Payment.YsfPay.Models.MchParams
         /// <summary>子商户编号（merId）</summary>
         public string MerId { get; set; }
 
-        /// <summary>服务商私钥证书内容（PKCS12 Base64 或文件路径）</summary>
+        /// <summary>密钥模式: 0-公钥模式, 1-证书模式（默认按配置字段自动推断）</summary>
+        public CertMode? UseCert { get; set; }
+
+        /// <summary>服务商私钥（公钥模式下使用，PKCS8 PEM 或 Base64）</summary>
+        public string PrivateKey { get; set; }
+
+        /// <summary>服务商私钥证书内容（证书模式下使用，PKCS12 Base64）</summary>
         public string PrivateCert { get; set; }
 
         /// <summary>私钥证书密码</summary>

@@ -28,7 +28,7 @@ namespace B.Unified.Payment.Alipay.PayWay
 
         protected override Task<AbstractRS> ExecutePayAsync(UnifiedOrderRQ rq, MchAppConfigContext ctx)
         {
-            var client = AlipayClientFactory.Build(ctx);
+            var holder = AlipayClientFactory.Build(ctx);
             var req = new AlipayTradeCreateRequest();
             req.SetBizModel(new AlipayTradeCreateModel
             {
@@ -42,7 +42,7 @@ namespace B.Unified.Payment.Alipay.PayWay
             });
             req.SetNotifyUrl(rq.NotifyUrl);
 
-            var resp = client.Execute(req);
+            var resp = holder.Execute(req);
             var rs = new AliLiteOrderRS { PayOrderId = rq.PayOrderId, MchOrderNo = rq.MchOrderNo };
 
             if (!resp.IsError)
